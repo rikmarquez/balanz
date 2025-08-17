@@ -14,6 +14,8 @@ export const CreateCreditCardSchema = z.object({
 export const UpdateCreditCardSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido').max(100, 'El nombre no puede exceder 100 caracteres').optional(),
   creditLimit: z.string().regex(/^\d+(\.\d{1,2})?$/, 'El límite debe ser un número válido').optional(),
+  currentBalance: z.string().regex(/^\d+(\.\d{1,2})?$/, 'El balance actual debe ser un número válido').optional(),
+  initialBalance: z.string().regex(/^\d+(\.\d{1,2})?$/, 'El balance inicial debe ser un número válido').optional(),
   cutDay: z.number().min(1, 'El día de corte debe estar entre 1 y 31').max(31, 'El día de corte debe estar entre 1 y 31').optional(),
   dueDay: z.number().min(1, 'El día de vencimiento debe estar entre 1 y 31').max(31, 'El día de vencimiento debe estar entre 1 y 31').optional(),
   isActive: z.boolean().optional(),
