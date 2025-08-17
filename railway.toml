@@ -3,10 +3,11 @@ builder = "nixpacks"
 
 [deploy]
 buildCommand = "npm ci && npm run db:push && npm run build"
-startCommand = "HOSTNAME=0.0.0.0 node .next/standalone/server.js"
+startCommand = "node .next/standalone/server.js"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
 
 [env]
 NODE_ENV = "production"
 PORT = "3000"
+HOSTNAME = "0.0.0.0"
