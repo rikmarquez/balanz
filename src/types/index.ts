@@ -47,7 +47,7 @@ export interface Category {
   userId: string;
   name: string;
   type: CategoryType;
-  color: string;
+  color: string | null;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -132,6 +132,7 @@ export const DEFAULT_EXPENSE_CATEGORIES = [
   { name: 'Servicios', color: '#6366F1' },
   { name: 'Hogar', color: '#14B8A6' },
   { name: 'Personales', color: '#A855F7' },
+  { name: 'Pago de tarjeta', color: '#DC2626' },
 ];
 
 // Default cash accounts

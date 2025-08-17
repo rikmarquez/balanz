@@ -24,13 +24,13 @@ export default async function Home() {
             </p>
             
             <div className="space-y-3">
-              <SignInButton mode="modal">
+              <SignInButton>
                 <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium">
                   Iniciar Sesión
                 </button>
               </SignInButton>
               
-              <SignUpButton mode="modal">
+              <SignUpButton>
                 <button className="w-full bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors font-medium">
                   Crear Cuenta
                 </button>

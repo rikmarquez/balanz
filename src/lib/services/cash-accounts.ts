@@ -13,6 +13,10 @@ export const UpdateCashAccountSchema = z.object({
   isActive: z.boolean().optional(),
 });
 
+export const UpdateInitialBalanceSchema = z.object({
+  initialBalance: z.string().regex(/^\d+(\.\d{1,2})?$/, 'El balance debe ser un número válido'),
+});
+
 export type CreateCashAccountInput = z.infer<typeof CreateCashAccountSchema>;
 export type UpdateCashAccountInput = z.infer<typeof UpdateCashAccountSchema>;
 
@@ -95,4 +99,37 @@ export async function adjustCashAccountBalance(id: string, amount: string, userI
     .returning();
 
   return result[0];
+}
+
+export async function hasTransactions(accountId: string, userId: string): Promise<boolean> {
+  const { transactions } = await import('../db/schema');
+  
+  const result = await db
+    .select()
+    .from(transactions)
+    .where(and(eq(transactions.accountId, accountId), eq(transactions.userId, userId)))
+    .limit(1);
+
+  return result.length > 0;
+}
+
+export async function updateInitialBalance(id: string, newInitialBalance: string, userId: string) {
+  // Verificar que la cuenta no tenga transacciones
+  const hasMovements = await hasTransactions(id, userId);
+  
+  if (hasMovements) {
+    throw new Error('No se puede modificar el saldo inicial de una cuenta con movimientos');
+  }
+
+  const result = await db
+    .update(cashAccounts)
+    .set({
+      initialBalance: newInitialBalance,
+      currentBalance: newInitialBalance, // El balance actual debe ser igual al inicial si no hay movimientos
+      updatedAt: new Date(),
+    })
+    .where(and(eq(cashAccounts.id, id), eq(cashAccounts.userId, userId)))
+    .returning();
+
+  return result[0] || null;
 }

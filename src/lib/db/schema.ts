@@ -98,6 +98,18 @@ export const adjustments = pgTable('adjustments', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+export const balanceAdjustments = pgTable('balance_adjustments', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  accountId: uuid('account_id').references(() => cashAccounts.id),
+  creditCardId: uuid('credit_card_id').references(() => creditCards.id),
+  previousBalance: decimal('previous_balance', { precision: 12, scale: 2 }).notNull(),
+  newBalance: decimal('new_balance', { precision: 12, scale: 2 }).notNull(),
+  adjustmentAmount: decimal('adjustment_amount', { precision: 12, scale: 2 }).notNull(),
+  reason: text('reason').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   cashAccounts: many(cashAccounts),
@@ -107,6 +119,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   transactions: many(transactions),
   cardPayments: many(cardPayments),
   adjustments: many(adjustments),
+  balanceAdjustments: many(balanceAdjustments),
 }));
 
 export const cashAccountsRelations = relations(cashAccounts, ({ one, many }) => ({
@@ -117,6 +130,7 @@ export const cashAccountsRelations = relations(cashAccounts, ({ one, many }) => 
   transactions: many(transactions),
   cardPayments: many(cardPayments),
   adjustments: many(adjustments),
+  balanceAdjustments: many(balanceAdjustments),
 }));
 
 export const creditCardsRelations = relations(creditCards, ({ one, many }) => ({
@@ -127,6 +141,7 @@ export const creditCardsRelations = relations(creditCards, ({ one, many }) => ({
   transactions: many(transactions),
   cardPayments: many(cardPayments),
   adjustments: many(adjustments),
+  balanceAdjustments: many(balanceAdjustments),
 }));
 
 export const categoriesRelations = relations(categories, ({ one, many }) => ({
@@ -202,6 +217,21 @@ export const adjustmentsRelations = relations(adjustments, ({ one }) => ({
   }),
   card: one(creditCards, {
     fields: [adjustments.cardId],
+    references: [creditCards.id],
+  }),
+}));
+
+export const balanceAdjustmentsRelations = relations(balanceAdjustments, ({ one }) => ({
+  user: one(users, {
+    fields: [balanceAdjustments.userId],
+    references: [users.id],
+  }),
+  account: one(cashAccounts, {
+    fields: [balanceAdjustments.accountId],
+    references: [cashAccounts.id],
+  }),
+  creditCard: one(creditCards, {
+    fields: [balanceAdjustments.creditCardId],
     references: [creditCards.id],
   }),
 }));

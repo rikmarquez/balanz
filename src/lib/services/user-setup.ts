@@ -1,6 +1,7 @@
 import { db } from '../db';
 import { cashAccounts, categories } from '../db/schema';
 import { DEFAULT_CASH_ACCOUNTS, DEFAULT_INCOME_CATEGORIES, DEFAULT_EXPENSE_CATEGORIES } from '@/types';
+import { eq, and } from 'drizzle-orm';
 
 export async function initializeUserData(userId: string) {
   try {
@@ -35,6 +36,35 @@ export async function initializeUserData(userId: string) {
     console.log('User data initialized successfully for user:', userId);
   } catch (error) {
     console.error('Error initializing user data:', error);
+    throw error;
+  }
+}
+
+export async function ensurePaymentCategory(userId: string) {
+  try {
+    // Verificar si ya existe la categoría "Pago de tarjeta"
+    const existingCategory = await db
+      .select()
+      .from(categories)
+      .where(and(
+        eq(categories.userId, userId),
+        eq(categories.name, 'Pago de tarjeta'),
+        eq(categories.type, 'expense')
+      ))
+      .limit(1);
+
+    if (existingCategory.length === 0) {
+      // Crear la categoría si no existe
+      await db.insert(categories).values({
+        userId,
+        name: 'Pago de tarjeta',
+        type: 'expense',
+        color: '#DC2626',
+      });
+      console.log('Created "Pago de tarjeta" category for user:', userId);
+    }
+  } catch (error) {
+    console.error('Error ensuring payment category:', error);
     throw error;
   }
 }

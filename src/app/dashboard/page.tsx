@@ -1,5 +1,7 @@
 import { requireAuth } from '@/lib/auth';
 import { getCashAccounts } from '@/lib/services/cash-accounts';
+import { getCreditCards } from '@/lib/services/credit-cards';
+import { getCurrentMonthStats } from '@/lib/services/transactions';
 import { DashboardStats } from '@/components/dashboard/DashboardStats';
 import { RecentTransactions } from '@/components/dashboard/RecentTransactions';
 import { QuickActions } from '@/components/dashboard/QuickActions';
@@ -7,9 +9,15 @@ import { QuickActions } from '@/components/dashboard/QuickActions';
 export default async function DashboardPage() {
   const user = await requireAuth();
   const cashAccounts = await getCashAccounts(user.id);
+  const creditCards = await getCreditCards(user.id);
+  const monthStats = await getCurrentMonthStats(user.id);
 
   const totalCashBalance = cashAccounts.reduce((sum, account) => {
     return sum + parseFloat(account.currentBalance);
+  }, 0);
+
+  const totalCreditBalance = creditCards.reduce((sum, card) => {
+    return sum + parseFloat(card.currentBalance);
   }, 0);
 
   return (
@@ -24,6 +32,10 @@ export default async function DashboardPage() {
       <DashboardStats 
         totalCashBalance={totalCashBalance}
         cashAccountsCount={cashAccounts.length}
+        totalCreditBalance={totalCreditBalance}
+        creditCardsCount={creditCards.length}
+        monthlyIncome={monthStats.income}
+        monthlyExpenses={monthStats.expense}
       />
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -3,7 +3,7 @@
 import { CashAccount } from '@/types';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
-import { Edit, Trash2, DollarSign } from 'lucide-react';
+import { Edit, DollarSign } from 'lucide-react';
 import Link from 'next/link';
 
 interface CashAccountsListProps {
@@ -39,16 +39,19 @@ export function CashAccountsList({ accounts }: CashAccountsListProps) {
                   <Edit className="h-4 w-4" />
                 </Button>
               </Link>
-              <Button variant="ghost" size="icon">
-                <Trash2 className="h-4 w-4 text-red-600" />
-              </Button>
             </div>
           </div>
           
           <div className="space-y-2">
             <div className="flex justify-between">
               <span className="text-sm text-gray-600">Balance inicial:</span>
-              <span className="text-sm font-medium">
+              <span 
+                style={{ 
+                  color: '#1e40af', 
+                  fontWeight: '600',
+                  fontSize: '15px'
+                }}
+              >
                 {formatCurrency(account.initialBalance)}
               </span>
             </div>

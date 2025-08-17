@@ -11,16 +11,17 @@ import {
   TrendingDown, 
   BarChart3, 
   Settings,
-  Tags
+  Tags,
+  Hash
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Cuentas', href: '/dashboard/accounts', icon: Wallet },
-  { name: 'Tarjetas', href: '/dashboard/cards', icon: CreditCard },
-  { name: 'Ingresos', href: '/dashboard/income', icon: TrendingUp },
-  { name: 'Gastos', href: '/dashboard/expenses', icon: TrendingDown },
+  { name: 'Tarjetas', href: '/dashboard/credit-cards', icon: CreditCard },
+  { name: 'Transacciones', href: '/dashboard/transactions', icon: TrendingUp },
   { name: 'Categorías', href: '/dashboard/categories', icon: Tags },
+  { name: 'Tags', href: '/dashboard/tags', icon: Hash },
   { name: 'Reportes', href: '/dashboard/reports', icon: BarChart3 },
   { name: 'Configuración', href: '/dashboard/settings', icon: Settings },
 ];
