@@ -2,8 +2,8 @@
 builder = "nixpacks"
 
 [deploy]
-buildCommand = "npm ci && npm run db:push && npm run build"
-startCommand = "node .next/standalone/server.js"
+buildCommand = "npm ci && npm run db:push && npm run build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/"
+startCommand = "cd .next/standalone && node server.js"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
 
