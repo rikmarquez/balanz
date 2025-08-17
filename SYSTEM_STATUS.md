@@ -362,12 +362,57 @@ El proyecto Balanz está **100% completado** con todas las funcionalidades princ
 **ESTADO TÉCNICO FINAL:**
 - ✅ Servidor funcionando en modo producción
 - ✅ Base de datos PostgreSQL funcionando en Railway
-- ✅ Autenticación OAuth con Google funcionando
+- ⚠️ **PENDIENTE: Migración de autenticación Clerk → NextAuth.js**
 - ✅ Todas las APIs endpoint testeadas y funcionando
 - ✅ Interfaz completa para todas las entidades
 - ✅ Sistema completamente funcional sin errores
-- ✅ **LISTO PARA DEPLOY EN RAILWAY** 🚀
+- ✅ **DESPLEGADO EN RAILWAY** - Con limitaciones de auth 🚀
 
 ---
 
-*Documento actualizado automáticamente con cada nueva funcionalidad implementada*
+## 🚨 PENDIENTE CRÍTICO - PRÓXIMA SESIÓN
+
+### **Problema identificado:**
+- **Clerk no permite dominios Railway** en modo producción
+- Páginas de cuentas/tarjetas **no cargan** (error 401 Unauthorized)
+- APIs devuelven **401** por keys de desarrollo en producción
+
+### **Solución planificada:**
+**Migración completa a NextAuth.js** (más compatible y estable)
+
+### **Tareas pendientes:**
+1. **Completar migración NextAuth.js** (parcialmente iniciada)
+2. **Crear Google OAuth app** en Google Cloud Console
+3. **Actualizar middleware de auth** para NextAuth
+4. **Reemplazar componentes Clerk** por NextAuth
+5. **Configurar variables Railway:**
+   ```bash
+   # Eliminar variables Clerk:
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY (eliminar)
+   CLERK_SECRET_KEY (eliminar)
+   
+   # Agregar variables NextAuth:
+   NEXTAUTH_URL=https://balanz-production.up.railway.app
+   NEXTAUTH_SECRET=(generar secreto random)
+   GOOGLE_CLIENT_ID=(desde Google OAuth app)
+   GOOGLE_CLIENT_SECRET=(desde Google OAuth app)
+   ```
+
+### **Estado actual deployment:**
+- ✅ **Aplicación desplegada** en `https://balanz-production.up.railway.app`
+- ✅ **Estilos CSS funcionando** correctamente
+- ✅ **Dashboard visible** pero con limitaciones
+- ❌ **Autenticación limitada** (solo desarrollo)
+- ❌ **APIs protegidas fallan** (401 errors)
+
+### **Archivos creados (listos para próxima sesión):**
+- `/src/app/api/auth/[...nextauth]/route.ts` ✅
+- `/src/app/auth/signin/page.tsx` ✅
+- `.env.example` actualizado ✅
+- `next-auth` package instalado ✅
+
+### **Tiempo estimado migración:** 20-30 minutos próxima sesión
+
+---
+
+*Documento actualizado - Sesión 17 Agosto 2025 - 21:30*
