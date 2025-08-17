@@ -6,6 +6,10 @@ const nextConfig = {
   // Configuración para Railway - Standalone build
   output: 'standalone',
   
+  // Configuración de assets para Railway
+  assetPrefix: process.env.NODE_ENV === 'production' ? undefined : undefined,
+  trailingSlash: false,
+  
   // Optimizaciones para producción
   poweredByHeader: false,
   generateEtags: false,
@@ -24,7 +28,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;"
+            value: "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.clerk.accounts.dev https://*.clerk.dev; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://*.clerk.accounts.dev https://*.clerk.dev;"
           }
         ]
       }
