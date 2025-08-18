@@ -151,6 +151,56 @@ export function SettingsClient() {
     }
   }
 
+  const resetAllData = async () => {
+    // Confirmación múltiple para evitar limpieza completa accidental
+    const confirmation1 = confirm(
+      '🚨 ADVERTENCIA EXTREMA: Esto eliminará TODOS los datos excepto usuarios.\n\nELIMINA TODO:\n- Todas las cuentas de efectivo\n- Todas las tarjetas de crédito\n- Todas las transacciones\n- Todas las categorías\n- Todos los tags\n- Todos los ajustes de balance\n\nMANTIENE:\n- Usuarios (para poder hacer login)\n\n¿Continuar con la limpieza COMPLETA?'
+    )
+    
+    if (!confirmation1) return
+    
+    const confirmation2 = prompt(
+      'Para confirmar la LIMPIEZA COMPLETA, escribe exactamente: ELIMINAR TODO\n\n(Esta acción NO SE PUEDE DESHACER y eliminará TODOS tus datos financieros)'
+    )
+    
+    if (confirmation2 !== 'ELIMINAR TODO') {
+      alert('Confirmación incorrecta. Limpieza cancelada.')
+      return
+    }
+
+    const confirmation3 = confirm(
+      'ÚLTIMA CONFIRMACIÓN:\n\n¿Estás 100% seguro de que quieres eliminar TODOS los datos?\n\nEsto significa empezar completamente desde cero.\n\nClick OK para ELIMINAR TODO o Cancel para abortar.'
+    )
+    
+    if (!confirmation3) return
+
+    setLoading(true)
+    setMessage(null)
+
+    try {
+      const response = await fetch('/api/admin/reset-all-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        setMessage({ 
+          type: 'success', 
+          text: 'Limpieza completa exitosa. Todos los datos eliminados excepto usuarios. Puedes empezar desde cero creando nuevas cuentas y tarjetas.'
+        })
+        await fetchData() // Refrescar datos (debería mostrar vacío)
+      } else {
+        const errorData = await response.json()
+        setMessage({ type: 'error', text: errorData.error || 'Error al realizar la limpieza completa' })
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Error de conexión' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const clearMessage = () => {
     setTimeout(() => setMessage(null), 5000)
   }
@@ -402,17 +452,19 @@ export function SettingsClient() {
               </Button>
             </div>
             
-            <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg opacity-60">
+            <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg border border-red-200">
               <div>
-                <h3 className="font-medium text-red-900">Eliminar Todos los Datos</h3>
+                <h3 className="font-medium text-red-900">🚨 Eliminar Todos los Datos</h3>
                 <p className="text-sm text-red-700">
-                  Esta acción eliminará permanentemente todas tus transacciones, cuentas y configuraciones (próximamente)
+                  Elimina TODOS los datos financieros (cuentas, tarjetas, transacciones, categorías, tags). 
+                  Mantiene solo usuarios para poder hacer login. ¡Empezar desde cero!
                 </p>
               </div>
               <Button
-                disabled
+                onClick={resetAllData}
+                disabled={loading}
                 variant="outline"
-                className="border-red-300 text-red-700 hover:bg-red-50"
+                className="border-red-500 text-red-800 hover:bg-red-100"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
                 Eliminar Todo
