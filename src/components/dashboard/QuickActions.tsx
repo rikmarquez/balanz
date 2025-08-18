@@ -6,13 +6,13 @@ export function QuickActions() {
   const actions = [
     {
       name: 'Registrar Ingreso',
-      href: '/dashboard/income/new',
+      href: '/dashboard/transactions/new?type=income',
       icon: TrendingUp,
       color: 'bg-green-600 hover:bg-green-700',
     },
     {
       name: 'Registrar Gasto',
-      href: '/dashboard/expenses/new',
+      href: '/dashboard/transactions/new?type=expense',
       icon: TrendingDown,
       color: 'bg-red-600 hover:bg-red-700',
     },
@@ -24,7 +24,7 @@ export function QuickActions() {
     },
     {
       name: 'Nueva Tarjeta',
-      href: '/dashboard/cards/new',
+      href: '/dashboard/credit-cards/new',
       icon: CreditCard,
       color: 'bg-purple-600 hover:bg-purple-700',
     },

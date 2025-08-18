@@ -48,7 +48,7 @@ export async function ensurePaymentCategory(userId: string) {
       .from(categories)
       .where(and(
         eq(categories.userId, userId),
-        eq(categories.name, 'Pago de tarjeta'),
+        eq(categories.name, 'Pago de Tarjeta'),
         eq(categories.type, 'expense')
       ))
       .limit(1);
@@ -57,11 +57,11 @@ export async function ensurePaymentCategory(userId: string) {
       // Crear la categoría si no existe
       await db.insert(categories).values({
         userId,
-        name: 'Pago de tarjeta',
+        name: 'Pago de Tarjeta',
         type: 'expense',
         color: '#DC2626',
       });
-      console.log('Created "Pago de tarjeta" category for user:', userId);
+      console.log('Created "Pago de Tarjeta" category for user:', userId);
     }
   } catch (error) {
     console.error('Error ensuring payment category:', error);

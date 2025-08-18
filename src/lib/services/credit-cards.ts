@@ -160,22 +160,11 @@ export async function processCreditCardPayment(
     // 2. Reducir el saldo de la tarjeta (menos deuda)
     await adjustCreditCardBalance(cardId, (-paymentData.amount).toString(), userId);
 
-    // 3. Asegurar que existe la categoría para pagos de tarjetas
-    const { ensurePaymentCategory } = await import('./user-setup');
-    await ensurePaymentCategory(userId);
-    
-    // 4. Obtener la categoría para pagos de tarjetas
-    const { getCategories } = await import('./categories');
-    const categories = await getCategories(userId, 'expense');
-    const paymentCategory = categories.find(cat => cat.name === 'Pago de tarjeta');
-    
-    if (!paymentCategory) {
-      throw new Error('Error interno: No se pudo crear la categoría "Pago de tarjeta".');
-    }
-    
-    const paymentCategoryId = paymentCategory.id;
+    // 3. Obtener o crear la categoría para pagos de tarjetas
+    const { getOrCreatePaymentCategory } = await import('./categories');
+    const paymentCategoryId = await getOrCreatePaymentCategory(userId);
 
-    // 5. Crear registro de transacción (pago de tarjeta)
+    // 4. Crear registro de transacción (pago de tarjeta)
     const { createTransaction } = await import('./transactions');
     const transaction = await createTransaction({
       type: 'expense',

@@ -143,7 +143,7 @@ export async function getOrCreatePaymentCategory(userId: string): Promise<string
     .where(
       and(
         eq(categories.userId, userId),
-        eq(categories.name, 'Pago de Tarjetas'),
+        eq(categories.name, 'Pago de Tarjeta'),
         eq(categories.type, 'expense')
       )
     )
@@ -155,7 +155,7 @@ export async function getOrCreatePaymentCategory(userId: string): Promise<string
 
   // Si no existe, crear la categoría
   const newCategory = await createCategory({
-    name: 'Pago de Tarjetas',
+    name: 'Pago de Tarjeta',
     type: 'expense',
     color: '#8B5CF6' // Púrpura para distinguir pagos de tarjetas
   }, userId);

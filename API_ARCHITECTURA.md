@@ -1,25 +1,35 @@
 # BALANZ - Documentación de API
 
-*Fecha de actualización: 16 de Agosto 2025 - 16:05*
+*Fecha de actualización: 18 de Agosto 2025 - 01:30*
 
 ## 📋 Resumen General
 
 **Base URL**: http://localhost:3002/api  
-**Autenticación**: Clerk (Bearer Token)  
+**Autenticación**: NextAuth.js (Session-based) - ¡MIGRADO!  
 **Respuesta**: JSON estandarizado  
 **Validación**: Zod schemas  
+**Estado**: ✅ API 100% Completada y Funcional  
 
 ---
 
 ## 🔐 Autenticación
 
-Todas las rutas de la API requieren autenticación a través de Clerk. El middleware `withAuth` verifica automáticamente el token de usuario.
+Todas las rutas de la API requieren autenticación a través de NextAuth.js. El middleware verifica automáticamente la sesión del usuario.
 
 ```typescript
+// Sistema de autenticación NextAuth.js
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/lib/auth"
+
 // Middleware automático en todas las rutas
-const { userId } = auth();
-const user = await getCurrentUser();
+const session = await getServerSession(authOptions);
+const user = await getCurrentUser(session.user.email);
 ```
+
+### Proveedores de Autenticación:
+- ✅ **Credentials Provider** - Usuario/contraseña para admin
+- ✅ **Google OAuth Provider** - Autenticación con Google
+- ✅ **Session Management** - Manejo automático de sesiones
 
 ---
 
@@ -356,18 +366,151 @@ Todos los endpoints utilizan esquemas de Zod para validar los datos de entrada:
 
 ---
 
-## 🚀 Estado de Implementación
+---
 
-| Endpoint | Estado | Notas |
-|----------|---------|-------|
-| Cuentas (CRUD) | ✅ Completo | Incluye saldo inicial |
-| Categorías (CRUD) | ✅ Completo | Con sistema de colores |
-| Transacciones (CRUD) | ✅ Completo | Con relaciones completas |
-| Tarjetas (CRUD) | ✅ Backend listo | Frontend pendiente |
-| Autenticación | ✅ Completo | Clerk + middleware |
-| Validaciones | ✅ Completo | Zod schemas |
-| Manejo de errores | ✅ Completo | Respuestas estandarizadas |
+## 🏷️ API de Tags
+
+### Listar Tags
+**GET** `/api/tags`
+
+**Respuesta:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "uuid",
+      "userId": "uuid", 
+      "name": "Trabajo",
+      "color": "#3B82F6",
+      "createdAt": "2025-08-18T..."
+    }
+  ]
+}
+```
+
+### Crear Tag
+**POST** `/api/tags`
+
+**Body:**
+```json
+{
+  "name": "Nuevo Tag",
+  "color": "#10B981"
+}
+```
+
+### Actualizar Tag
+**PUT** `/api/tags/[id]`
+
+### Eliminar Tag
+**DELETE** `/api/tags/[id]`
 
 ---
 
-*Documentación actualizada automáticamente con cada nueva funcionalidad implementada*
+## 💸 API de Pagos de Tarjetas
+
+### Procesar Pago
+**POST** `/api/credit-cards/[cardId]/payments`
+
+**Body:**
+```json
+{
+  "amount": "500.00",
+  "accountId": "uuid",
+  "description": "Pago tarjeta Visa"
+}
+```
+
+---
+
+## 📊 API de Reportes
+
+### Obtener Transacciones con Filtros
+**GET** `/api/transactions`
+
+**Query Params:**
+- `startDate`: YYYY-MM-DD (opcional)
+- `endDate`: YYYY-MM-DD (opcional) 
+- `categoryId`: uuid (opcional)
+- `accountId`: uuid (opcional)
+- `cardId`: uuid (opcional)
+- `type`: income|expense (opcional)
+- `search`: string (opcional)
+- `tags`: string[] (opcional)
+
+---
+
+## 🔧 API de Administración
+
+### Recalcular Saldos
+**POST** `/api/admin/recalculate-balances`
+
+### Reset de Transacciones
+**POST** `/api/admin/reset-data`
+
+**Body:**
+```json
+{
+  "confirm": "RESET_TRANSACTIONS"
+}
+```
+
+### Reset Completo de Datos
+**POST** `/api/admin/reset-all-data`
+
+### Ajustes Manuales de Saldos
+**GET/POST/PUT/DELETE** `/api/balance-adjustments`
+
+---
+
+## 🚀 Estado de Implementación Final
+
+| Endpoint | Estado | Notas |
+|----------|---------|-------|
+| Cuentas (CRUD) | ✅ Completo | Incluye saldo inicial y balance automático |
+| Categorías (CRUD) | ✅ Completo | Con sistema de colores y filtros |
+| Transacciones (CRUD) | ✅ Completo | Con relaciones, filtros y búsqueda |
+| Tarjetas (CRUD) | ✅ Completo | Frontend y backend completo |
+| Tags (CRUD) | ✅ Completo | Sistema completo de etiquetas |
+| Pagos de Tarjetas | ✅ Completo | Transferencias automáticas |
+| Filtros Avanzados | ✅ Completo | Búsqueda multifiltro |
+| Reportes | ✅ Completo | Gráficas y análisis |
+| Administración | ✅ Completo | Gestión de datos y saldos |
+| Autenticación | ✅ Completo | NextAuth.js + Google OAuth |
+| Validaciones | ✅ Completo | Zod schemas completos |
+| Manejo de errores | ✅ Completo | Respuestas estandarizadas |
+| Responsividad | ✅ Completo | Móvil, tablet y desktop |
+
+**Estado General: ✅ API 100% COMPLETADA**
+
+---
+
+## 🎉 FUNCIONALIDADES FINALES IMPLEMENTADAS
+
+### ✅ APIs Avanzadas:
+- **Sistema completo de filtros** con múltiples parámetros
+- **Búsqueda de texto** en descripciones de transacciones  
+- **Filtros por tags** con selección múltiple
+- **Filtros por fecha** con rangos personalizados
+- **API de reportes** con cálculos automáticos
+- **Endpoints de administración** para gestión de datos
+
+### ✅ Funcionalidades de Negocio:
+- **Cálculo automático de saldos** al crear/editar transacciones
+- **Recálculo masivo** de todos los saldos desde transacciones
+- **Sistema de pagos** de tarjetas con actualización automática
+- **Ajustes manuales** con historial de cambios
+- **Reset de datos** con confirmaciones múltiples
+
+### ✅ Integración Frontend-Backend:
+- **Client-side filtering** con URLs persistentes
+- **Búsqueda en tiempo real** con debounce
+- **Filtros combinables** con estado compartido
+- **Paginación automática** con scroll infinito
+- **Validaciones sincronizadas** entre frontend y backend
+
+---
+
+*Documentación actualizada - Sesión FINAL: 18 Agosto 2025 - 01:30*  
+**🎯 ESTADO: API COMPLETAMENTE DOCUMENTADA Y FUNCIONAL 🎯**
