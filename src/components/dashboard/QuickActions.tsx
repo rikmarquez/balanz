@@ -34,12 +34,13 @@ export function QuickActions() {
     <div className="bg-white rounded-lg border border-gray-200 p-6">
       <h2 className="text-lg font-semibold text-gray-900 mb-4">Acciones Rápidas</h2>
       
-      <div className="space-y-5">
+      <div className="flex flex-col gap-4">
         {actions.map((action) => (
-          <Link key={action.name} href={action.href}>
+          <Link key={action.name} href={action.href} className="block">
             <Button 
               className={`w-full justify-start ${action.color}`}
               variant="default"
+              style={{ marginBottom: '8px' }}
             >
               <action.icon className="h-4 w-4 mr-2" />
               {action.name}
