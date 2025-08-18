@@ -98,22 +98,22 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div>
+        <div className="mb-4">
           <h1 className="text-2xl font-bold text-gray-900">Transacciones</h1>
           <p className="text-gray-600">
             Registra y gestiona tus ingresos y gastos
           </p>
         </div>
-        <div className="flex space-x-3">
-          <Link href="/dashboard/transactions/new?type=income">
-            <Button variant="outline">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Link href="/dashboard/transactions/new?type=income" className="flex-1 sm:flex-none">
+            <Button variant="outline" className="w-full sm:w-auto">
               <TrendingUp className="h-4 w-4 mr-2 text-green-600" />
               Nuevo Ingreso
             </Button>
           </Link>
-          <Link href="/dashboard/transactions/new?type=expense">
-            <Button>
+          <Link href="/dashboard/transactions/new?type=expense" className="flex-1 sm:flex-none">
+            <Button className="w-full sm:w-auto">
               <TrendingDown className="h-4 w-4 mr-2" />
               Nuevo Gasto
             </Button>

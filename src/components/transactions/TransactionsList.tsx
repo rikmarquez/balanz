@@ -52,12 +52,12 @@ export function TransactionsList({ transactions, onTransactionUpdate }: Transact
         <TrendingUp className="h-12 w-12 text-gray-400 mx-auto mb-4" />
         <h3 className="text-lg font-medium text-gray-900 mb-2">No hay transacciones</h3>
         <p className="text-gray-600 mb-4">Registra tu primera transacción para comenzar</p>
-        <div className="flex justify-center space-x-3">
-          <Link href="/dashboard/transactions/new?type=income">
-            <Button variant="outline">Registrar Ingreso</Button>
+        <div className="flex flex-col sm:flex-row justify-center gap-3 max-w-xs mx-auto">
+          <Link href="/dashboard/transactions/new?type=income" className="flex-1 sm:flex-none">
+            <Button variant="outline" className="w-full">Registrar Ingreso</Button>
           </Link>
-          <Link href="/dashboard/transactions/new?type=expense">
-            <Button>Registrar Gasto</Button>
+          <Link href="/dashboard/transactions/new?type=expense" className="flex-1 sm:flex-none">
+            <Button className="w-full">Registrar Gasto</Button>
           </Link>
         </div>
       </div>

@@ -150,9 +150,9 @@ export function TransactionFilters({ onFiltersChange, isLoading }: TransactionFi
     <div className="bg-white rounded-lg border border-gray-200">
       {/* Header con búsqueda y toggle de filtros */}
       <div className="p-4 border-b border-gray-200">
-        <div className="flex items-center space-x-4">
+        <div className="space-y-4">
           {/* Búsqueda de texto */}
-          <div className="flex-1 relative">
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
@@ -163,30 +163,32 @@ export function TransactionFilters({ onFiltersChange, isLoading }: TransactionFi
             />
           </div>
           
-          {/* Botón de filtros */}
-          <Button
-            variant={showFilters || hasActiveFilters ? "default" : "outline"}
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center space-x-2"
-          >
-            <Filter className="h-4 w-4" />
-            <span>Filtros</span>
-            {hasActiveFilters && (
-              <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
-                {Object.values(filters).filter(value => 
-                  Array.isArray(value) ? value.length > 0 : Boolean(value)
-                ).length}
-              </span>
-            )}
-          </Button>
-
-          {/* Botón limpiar */}
-          {hasActiveFilters && (
-            <Button variant="ghost" onClick={clearAllFilters}>
-              <X className="h-4 w-4 mr-2" />
-              Limpiar
+          {/* Botones de filtros */}
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={showFilters || hasActiveFilters ? "default" : "outline"}
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center space-x-2"
+            >
+              <Filter className="h-4 w-4" />
+              <span>Filtros</span>
+              {hasActiveFilters && (
+                <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
+                  {Object.values(filters).filter(value => 
+                    Array.isArray(value) ? value.length > 0 : Boolean(value)
+                  ).length}
+                </span>
+              )}
             </Button>
-          )}
+
+            {/* Botón limpiar */}
+            {hasActiveFilters && (
+              <Button variant="ghost" onClick={clearAllFilters}>
+                <X className="h-4 w-4 mr-2" />
+                Limpiar
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
