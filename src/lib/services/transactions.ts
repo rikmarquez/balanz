@@ -499,3 +499,36 @@ export async function getFilteredTransactions(
 
   return results;
 }
+
+// Función para obtener estadísticas por cuenta específica
+export async function getAccountStats(accountId: string, userId: string) {
+  const result = await db
+    .select({
+      type: transactions.type,
+      total: sql<string>`SUM(${transactions.amount})`,
+    })
+    .from(transactions)
+    .where(
+      and(
+        eq(transactions.userId, userId),
+        eq(transactions.accountId, accountId),
+        eq(transactions.paymentMethod, 'cash')
+      )
+    )
+    .groupBy(transactions.type);
+
+  const stats = {
+    income: 0,
+    expense: 0,
+  };
+
+  result.forEach((row) => {
+    if (row.type === 'income') {
+      stats.income = parseFloat(row.total || '0');
+    } else if (row.type === 'expense') {
+      stats.expense = parseFloat(row.total || '0');
+    }
+  });
+
+  return stats;
+}

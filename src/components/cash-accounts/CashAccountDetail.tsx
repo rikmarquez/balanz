@@ -1,21 +1,43 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { CashAccount } from '@/types';
 import { formatCurrency } from '@/lib/utils';
-import { ArrowLeft, Edit, Settings, Trash2, DollarSign } from 'lucide-react';
+import { ArrowLeft, Edit, Trash2, DollarSign, TrendingUp, TrendingDown, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
 
 interface CashAccountDetailProps {
   account: CashAccount;
 }
 
+interface AccountStats {
+  income: number;
+  expense: number;
+}
+
 export function CashAccountDetail({ account }: CashAccountDetailProps) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [stats, setStats] = useState<AccountStats>({ income: 0, expense: 0 });
+
+  useEffect(() => {
+    const fetchAccountStats = async () => {
+      try {
+        const response = await fetch(`/api/accounts/${account.id}/stats`);
+        if (response.ok) {
+          const data = await response.json();
+          setStats(data);
+        }
+      } catch (error) {
+        console.error('Error fetching account stats:', error);
+      }
+    };
+
+    fetchAccountStats();
+  }, [account.id]);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -56,9 +78,9 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
           </div>
         </div>
         
-        <div className="flex items-center space-x-2">
-          <Link href={`/dashboard/accounts/${account.id}/edit`}>
-            <Button variant="outline">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2">
+          <Link href={`/dashboard/accounts/${account.id}/edit`} className="w-full sm:w-auto">
+            <Button variant="outline" className="w-full sm:w-auto">
               <Edit className="h-4 w-4 mr-2" />
               Editar
             </Button>
@@ -66,7 +88,7 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
           <Button 
             variant="outline" 
             onClick={() => setShowDeleteConfirm(true)}
-            className="text-red-600 hover:text-red-700"
+            className="w-full sm:w-auto text-red-600 hover:text-red-700"
           >
             <Trash2 className="h-4 w-4 mr-2" />
             Eliminar
@@ -75,7 +97,7 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
       </div>
 
       {/* Account Info Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {/* Balance Actual */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center">
@@ -91,86 +113,74 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
           </div>
         </div>
 
-        {/* Balance Inicial */}
+        {/* Total Ingresos */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <DollarSign className="h-6 w-6 text-blue-600" />
+            <div className="p-2 bg-emerald-100 rounded-lg">
+              <TrendingUp className="h-6 w-6 text-emerald-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Balance Inicial</p>
-              <p className="text-2xl font-bold text-blue-600">
-                {formatCurrency(account.initialBalance)}
+              <p className="text-sm font-medium text-gray-600">Total Ingresos</p>
+              <p className="text-2xl font-bold text-emerald-600">
+                {formatCurrency(stats.income.toString())}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Estado */}
+        {/* Total Egresos */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="flex items-center">
+            <div className="p-2 bg-red-100 rounded-lg">
+              <TrendingDown className="h-6 w-6 text-red-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Total Egresos</p>
+              <p className="text-2xl font-bold text-red-600">
+                {formatCurrency(stats.expense.toString())}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Diferencia */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center">
             <div className={`p-2 rounded-lg ${
-              account.isActive ? 'bg-green-100' : 'bg-gray-100'
+              parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
+                ? 'bg-blue-100' : 'bg-orange-100'
             }`}>
-              <Settings className={`h-6 w-6 ${
-                account.isActive ? 'text-green-600' : 'text-gray-600'
+              <BarChart3 className={`h-6 w-6 ${
+                parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
+                  ? 'text-blue-600' : 'text-orange-600'
               }`} />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Estado</p>
-              <p className={`text-lg font-bold ${
-                account.isActive ? 'text-green-600' : 'text-gray-600'
+              <p className="text-sm font-medium text-gray-600">Diferencia</p>
+              <p className={`text-2xl font-bold ${
+                parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
+                  ? 'text-blue-600' : 'text-orange-600'
               }`}>
-                {account.isActive ? 'Activa' : 'Inactiva'}
+                {formatCurrency(
+                  (parseFloat(account.currentBalance) - parseFloat(account.initialBalance)).toString()
+                )}
               </p>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Account Details */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Información de la cuenta</h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          <div>
-            <label className="block text-sm font-medium text-gray-600">ID de la cuenta</label>
-            <p className="text-sm text-gray-900 font-mono bg-gray-50 p-2 rounded">{account.id}</p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-600">Fecha de creación</label>
-            <p className="text-sm text-gray-900">
-              {new Date(account.createdAt).toLocaleDateString('es-ES', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-600">Última actualización</label>
-            <p className="text-sm text-gray-900">
-              {new Date(account.updatedAt).toLocaleDateString('es-ES', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-600">Diferencia</label>
-            <p className={`text-sm font-medium ${
-              parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
-                ? 'text-green-600' 
-                : 'text-red-600'
-            }`}>
-              {formatCurrency(
-                (parseFloat(account.currentBalance) - parseFloat(account.initialBalance)).toString()
-              )}
-            </p>
+        {/* Balance Inicial */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="flex items-center">
+            <div className="p-2 bg-slate-100 rounded-lg">
+              <DollarSign className="h-6 w-6 text-slate-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Balance Inicial</p>
+              <p className="text-2xl font-bold text-slate-600">
+                {formatCurrency(account.initialBalance)}
+              </p>
+            </div>
           </div>
         </div>
       </div>
