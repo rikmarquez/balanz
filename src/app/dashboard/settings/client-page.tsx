@@ -243,80 +243,88 @@ export function SettingsClient() {
 
           <div className="space-y-4">
             {/* Recalcular saldos */}
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="p-4 bg-gray-50 rounded-lg space-y-3">
               <div>
                 <h3 className="font-medium text-gray-900">Recalcular Saldos</h3>
                 <p className="text-sm text-gray-600">
                   Recalcula automáticamente los saldos de todas las cuentas y tarjetas basándose en el historial de transacciones
                 </p>
               </div>
-              <Button
-                onClick={recalculateBalances}
-                disabled={recalculateLoading}
-                className="flex items-center gap-2"
-              >
-                {recalculateLoading ? (
-                  <RefreshCw className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Calculator className="w-4 h-4" />
-                )}
-                {recalculateLoading ? 'Recalculando...' : 'Recalcular'}
-              </Button>
+              <div className="flex">
+                <Button
+                  onClick={recalculateBalances}
+                  disabled={recalculateLoading}
+                  className="flex items-center gap-2 w-full sm:w-auto"
+                >
+                  {recalculateLoading ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Calculator className="w-4 h-4" />
+                  )}
+                  {recalculateLoading ? 'Recalculando...' : 'Recalcular'}
+                </Button>
+              </div>
             </div>
 
             {/* Ajustes manuales */}
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="p-4 bg-gray-50 rounded-lg space-y-3">
               <div>
                 <h3 className="font-medium text-gray-900">Ajustes Manuales de Saldos</h3>
                 <p className="text-sm text-gray-600">
                   Corrige saldos manualmente cuando sea necesario y mantén un historial de cambios
                 </p>
               </div>
-              <Button
-                onClick={() => window.location.href = '/dashboard/admin/balance-adjustments'}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <Calculator className="w-4 h-4" />
-                Ajustar Saldos
-              </Button>
+              <div className="flex">
+                <Button
+                  onClick={() => window.location.href = '/dashboard/admin/balance-adjustments'}
+                  variant="outline"
+                  className="flex items-center gap-2 w-full sm:w-auto"
+                >
+                  <Calculator className="w-4 h-4" />
+                  Ajustar Saldos
+                </Button>
+              </div>
             </div>
 
             {/* Exportar datos */}
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="p-4 bg-gray-50 rounded-lg space-y-3">
               <div>
                 <h3 className="font-medium text-gray-900">Exportar Datos</h3>
                 <p className="text-sm text-gray-600">
                   Descarga una copia de seguridad de todos tus datos en formato JSON
                 </p>
               </div>
-              <Button
-                onClick={exportData}
-                disabled={loading}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Exportar
-              </Button>
+              <div className="flex">
+                <Button
+                  onClick={exportData}
+                  disabled={loading}
+                  variant="outline"
+                  className="flex items-center gap-2 w-full sm:w-auto"
+                >
+                  <Download className="w-4 h-4" />
+                  Exportar
+                </Button>
+              </div>
             </div>
 
             {/* Importar datos (futuro) */}
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg opacity-60">
+            <div className="p-4 bg-gray-50 rounded-lg space-y-3 opacity-60">
               <div>
                 <h3 className="font-medium text-gray-900">Importar Datos</h3>
                 <p className="text-sm text-gray-600">
                   Restaura tus datos desde un archivo de respaldo (próximamente)
                 </p>
               </div>
-              <Button
-                disabled
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <Upload className="w-4 h-4" />
-                Importar
-              </Button>
+              <div className="flex">
+                <Button
+                  disabled
+                  variant="outline"
+                  className="flex items-center gap-2 w-full sm:w-auto"
+                >
+                  <Upload className="w-4 h-4" />
+                  Importar
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -387,40 +395,46 @@ export function SettingsClient() {
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="p-4 bg-gray-50 rounded-lg space-y-3">
               <div>
                 <h3 className="font-medium text-gray-900">Tema Visual</h3>
                 <p className="text-sm text-gray-600">
                   Cambiar entre modo claro y oscuro (próximamente)
                 </p>
               </div>
-              <Button disabled variant="outline">
-                Configurar
-              </Button>
+              <div className="flex">
+                <Button disabled variant="outline" className="w-full sm:w-auto">
+                  Configurar
+                </Button>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="p-4 bg-gray-50 rounded-lg space-y-3">
               <div>
                 <h3 className="font-medium text-gray-900">Formato de Moneda</h3>
                 <p className="text-sm text-gray-600">
                   Configurar moneda y formato de números (próximamente)
                 </p>
               </div>
-              <Button disabled variant="outline">
-                Configurar
-              </Button>
+              <div className="flex">
+                <Button disabled variant="outline" className="w-full sm:w-auto">
+                  Configurar
+                </Button>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="p-4 bg-gray-50 rounded-lg space-y-3">
               <div>
                 <h3 className="font-medium text-gray-900">Notificaciones</h3>
                 <p className="text-sm text-gray-600">
                   Configurar recordatorios y alertas (próximamente)
                 </p>
               </div>
-              <Button disabled variant="outline">
-                Configurar
-              </Button>
+              <div className="flex">
+                <Button disabled variant="outline" className="w-full sm:w-auto">
+                  Configurar
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -433,7 +447,7 @@ export function SettingsClient() {
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg">
+            <div className="p-4 bg-red-50 rounded-lg space-y-3">
               <div>
                 <h3 className="font-medium text-red-900">Reset de Transacciones</h3>
                 <p className="text-sm text-red-700">
@@ -441,18 +455,20 @@ export function SettingsClient() {
                   Mantiene cuentas, tarjetas, categorías y tags intactos.
                 </p>
               </div>
-              <Button
-                onClick={resetTransactions}
-                disabled={loading}
-                variant="outline"
-                className="border-red-300 text-red-700 hover:bg-red-50"
-              >
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Reset Transacciones
-              </Button>
+              <div className="flex">
+                <Button
+                  onClick={resetTransactions}
+                  disabled={loading}
+                  variant="outline"
+                  className="border-red-300 text-red-700 hover:bg-red-50 w-full sm:w-auto"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Reset Transacciones
+                </Button>
+              </div>
             </div>
             
-            <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg border border-red-200">
+            <div className="p-4 bg-red-50 rounded-lg border border-red-200 space-y-3">
               <div>
                 <h3 className="font-medium text-red-900">🚨 Eliminar Todos los Datos</h3>
                 <p className="text-sm text-red-700">
@@ -460,15 +476,17 @@ export function SettingsClient() {
                   Mantiene solo usuarios para poder hacer login. ¡Empezar desde cero!
                 </p>
               </div>
-              <Button
-                onClick={resetAllData}
-                disabled={loading}
-                variant="outline"
-                className="border-red-500 text-red-800 hover:bg-red-100"
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Eliminar Todo
-              </Button>
+              <div className="flex">
+                <Button
+                  onClick={resetAllData}
+                  disabled={loading}
+                  variant="outline"
+                  className="border-red-500 text-red-800 hover:bg-red-100 w-full sm:w-auto"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Eliminar Todo
+                </Button>
+              </div>
             </div>
           </div>
         </div>
