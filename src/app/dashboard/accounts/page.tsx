@@ -15,19 +15,21 @@ export default async function AccountsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div>
+        <div className="mb-4">
           <h1 className="text-2xl font-bold text-gray-900">Cuentas de Efectivo</h1>
           <p className="text-gray-600">
             Balance total: <span className="font-semibold text-green-600">${totalBalance.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
           </p>
         </div>
-        <Link href="/dashboard/accounts/new">
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            Nueva Cuenta
-          </Button>
-        </Link>
+        <div className="flex">
+          <Link href="/dashboard/accounts/new" className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto">
+              <Plus className="h-4 w-4 mr-2" />
+              Nueva Cuenta
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <CashAccountsList accounts={accounts} />

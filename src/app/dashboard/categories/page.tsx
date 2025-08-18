@@ -14,19 +14,21 @@ export default async function CategoriesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div>
+        <div className="mb-4">
           <h1 className="text-2xl font-bold text-gray-900">Categorías</h1>
           <p className="text-gray-600">
             Gestiona las categorías para tus ingresos y gastos
           </p>
         </div>
-        <Link href="/dashboard/categories/new">
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            Nueva Categoría
-          </Button>
-        </Link>
+        <div className="flex">
+          <Link href="/dashboard/categories/new" className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto">
+              <Plus className="h-4 w-4 mr-2" />
+              Nueva Categoría
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">

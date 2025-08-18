@@ -134,16 +134,18 @@ export default function TagsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
+      <div>
+        <div className="mb-4">
           <h1 className="text-2xl font-bold text-gray-900">Tags</h1>
           <p className="text-gray-600">Organiza tus transacciones con tags personalizados</p>
         </div>
         {!showForm && !editingTag && (
-          <Button onClick={() => setShowForm(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Nuevo Tag
-          </Button>
+          <div className="flex">
+            <Button onClick={() => setShowForm(true)} className="w-full sm:w-auto">
+              <Plus className="h-4 w-4 mr-2" />
+              Nuevo Tag
+            </Button>
+          </div>
         )}
       </div>
 
