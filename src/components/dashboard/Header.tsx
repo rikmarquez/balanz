@@ -4,12 +4,15 @@ import { signOut } from 'next-auth/react';
 import { User } from '@/types';
 import { Bell, Menu, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { useMobileMenu } from './MobileMenuProvider';
 
 interface HeaderProps {
   user: User;
 }
 
 export function Header({ user }: HeaderProps) {
+  const { toggle } = useMobileMenu();
+  
   const handleSignOut = () => {
     signOut({ callbackUrl: '/' });
   };
@@ -18,7 +21,12 @@ export function Header({ user }: HeaderProps) {
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <Button variant="ghost" size="icon" className="md:hidden">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="md:hidden"
+            onClick={toggle}
+          >
             <Menu className="h-5 w-5" />
           </Button>
           <div className="ml-4 md:ml-0">
