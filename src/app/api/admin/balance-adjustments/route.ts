@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server'
+import { requireAuth } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { cashAccounts, creditCards, balanceAdjustments } from '@/lib/db/schema'
@@ -14,11 +14,7 @@ const createAdjustmentSchema = z.object({
 
 export async function GET() {
   try {
-    const { userId } = await auth()
-    
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth()
 
     const adjustmentsData = await db
       .select({
@@ -40,7 +36,7 @@ export async function GET() {
       .from(balanceAdjustments)
       .leftJoin(cashAccounts, eq(balanceAdjustments.accountId, cashAccounts.id))
       .leftJoin(creditCards, eq(balanceAdjustments.creditCardId, creditCards.id))
-      .where(eq(balanceAdjustments.userId, userId))
+      .where(eq(balanceAdjustments.userId, user.id))
       .orderBy(desc(balanceAdjustments.createdAt))
 
     return NextResponse.json(adjustmentsData)
@@ -56,11 +52,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth()
-    
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const user = await requireAuth()
 
     const body = await request.json()
     const validatedData = createAdjustmentSchema.parse(body)
@@ -76,7 +68,7 @@ export async function POST(request: NextRequest) {
         .where(eq(cashAccounts.id, validatedData.entityId))
         .limit(1)
 
-      if (!entityData.length || entityData[0].userId !== userId) {
+      if (!entityData.length || entityData[0].userId !== user.id) {
         return NextResponse.json({ error: 'Cuenta no encontrada' }, { status: 404 })
       }
 
@@ -88,7 +80,7 @@ export async function POST(request: NextRequest) {
         .where(eq(creditCards.id, validatedData.entityId))
         .limit(1)
 
-      if (!entityData.length || entityData[0].userId !== userId) {
+      if (!entityData.length || entityData[0].userId !== user.id) {
         return NextResponse.json({ error: 'Tarjeta no encontrada' }, { status: 404 })
       }
 
@@ -99,7 +91,7 @@ export async function POST(request: NextRequest) {
 
     // Crear el registro del ajuste
     const adjustmentData = {
-      userId,
+      userId: user.id,
       accountId: validatedData.entityType === 'account' ? validatedData.entityId : null,
       creditCardId: validatedData.entityType === 'card' ? validatedData.entityId : null,
       previousBalance: currentBalance.toString(),

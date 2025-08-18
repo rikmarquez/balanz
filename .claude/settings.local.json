@@ -18,7 +18,8 @@
       "Bash(npm run start:*)",
       "Bash(pkill:*)",
       "Bash(taskkill:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm uninstall:*)"
     ],
     "deny": [],
     "ask": [],

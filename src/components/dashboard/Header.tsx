@@ -1,8 +1,8 @@
 'use client';
 
-import { UserButton } from '@clerk/nextjs';
+import { signOut } from 'next-auth/react';
 import { User } from '@/types';
-import { Bell, Menu } from 'lucide-react';
+import { Bell, Menu, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 interface HeaderProps {
@@ -10,6 +10,10 @@ interface HeaderProps {
 }
 
 export function Header({ user }: HeaderProps) {
+  const handleSignOut = () => {
+    signOut({ callbackUrl: '/' });
+  };
+
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -31,13 +35,19 @@ export function Header({ user }: HeaderProps) {
           <Button variant="ghost" size="icon">
             <Bell className="h-5 w-5" />
           </Button>
-          <UserButton 
-            appearance={{
-              elements: {
-                avatarBox: "w-8 h-8"
-              }
-            }}
-          />
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+              {user.name.charAt(0).toUpperCase()}
+            </div>
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={handleSignOut}
+              title="Cerrar sesión"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </header>

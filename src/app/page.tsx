@@ -1,11 +1,12 @@
-import { auth } from '@clerk/nextjs/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { SignInButton, SignUpButton } from '@clerk/nextjs';
+import Link from 'next/link';
 
 export default async function Home() {
-  const { userId } = auth();
+  const session = await getServerSession(authOptions);
 
-  if (userId) {
+  if (session) {
     redirect('/dashboard');
   }
 
@@ -24,17 +25,17 @@ export default async function Home() {
             </p>
             
             <div className="space-y-3">
-              <SignInButton>
+              <Link href="/auth/signin">
                 <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium">
                   Iniciar Sesión
                 </button>
-              </SignInButton>
+              </Link>
               
-              <SignUpButton>
+              <Link href="/auth/signin">
                 <button className="w-full bg-gray-600 text-white py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors font-medium">
                   Crear Cuenta
                 </button>
-              </SignUpButton>
+              </Link>
             </div>
           </div>
           

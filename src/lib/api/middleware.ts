@@ -1,4 +1,3 @@
-import { auth } from '@clerk/nextjs/server';
 import { getCurrentUser } from '@/lib/auth';
 import { unauthorizedResponse, serverErrorResponse } from './response';
 import { NextRequest } from 'next/server';
@@ -8,12 +7,6 @@ export async function withAuth<T>(
   handler: (user: any) => Promise<T>
 ): Promise<T> {
   try {
-    const { userId } = auth();
-    
-    if (!userId) {
-      throw unauthorizedResponse();
-    }
-
     const user = await getCurrentUser();
     
     if (!user) {
