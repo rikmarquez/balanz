@@ -69,9 +69,103 @@ export function TransactionsList({ transactions, onTransactionUpdate }: Transact
       {transactions.map((transaction) => (
         <div
           key={transaction.id}
-          className="p-6 hover:bg-gray-50 transition-colors"
+          className="p-4 sm:p-6 hover:bg-gray-50 transition-colors"
         >
-          <div className="flex items-center justify-between">
+          {/* Mobile Layout */}
+          <div className="block sm:hidden">
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex items-center space-x-3">
+                {/* Type Icon */}
+                <div className={`p-2 rounded-lg ${
+                  transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
+                }`}>
+                  {transaction.type === 'income' ? (
+                    <TrendingUp className="h-4 w-4 text-green-600" />
+                  ) : (
+                    <TrendingDown className="h-4 w-4 text-red-600" />
+                  )}
+                </div>
+
+                {/* Transaction Description and Amount */}
+                <div className="flex-1">
+                  <h3 className="text-sm font-medium text-gray-900 mb-1">
+                    {transaction.description}
+                  </h3>
+                  <span className={`text-lg font-semibold ${
+                    transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Category */}
+            {transaction.category && (
+              <div className="mb-2">
+                <span 
+                  className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white"
+                  style={{ backgroundColor: transaction.category.color }}
+                >
+                  {transaction.category.name}
+                </span>
+              </div>
+            )}
+
+            {/* Date and Payment Method */}
+            <div className="flex flex-col space-y-1 mb-3">
+              <span className="text-sm text-gray-600">
+                {new Date(transaction.date).toLocaleDateString('es-ES', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric'
+                })}
+              </span>
+              
+              <div className="flex items-center space-x-1">
+                {transaction.paymentMethod === 'cash' ? (
+                  <Wallet className="h-4 w-4 text-gray-400" />
+                ) : (
+                  <CreditCard className="h-4 w-4 text-gray-400" />
+                )}
+                <span className="text-sm text-gray-600">
+                  {transaction.paymentMethod === 'cash' 
+                    ? transaction.account?.name || 'Efectivo'
+                    : transaction.card?.name || 'Tarjeta'
+                  }
+                </span>
+              </div>
+            </div>
+
+            {/* Notes */}
+            {transaction.notes && (
+              <p className="text-sm text-gray-500 mb-3">{transaction.notes}</p>
+            )}
+
+            {/* Action Buttons - Full width on mobile */}
+            <div className="flex space-x-2">
+              <Link href={`/dashboard/transactions/${transaction.id}/edit`} className="flex-1">
+                <Button variant="outline" size="sm" className="w-full">
+                  <Edit className="h-4 w-4 mr-2" />
+                  Editar
+                </Button>
+              </Link>
+              
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => handleDelete(transaction.id)}
+                disabled={deletingId === transaction.id}
+                className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Eliminar
+              </Button>
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
             <div className="flex items-center space-x-4">
               {/* Type Icon */}
               <div className={`p-2 rounded-lg ${
