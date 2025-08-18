@@ -227,29 +227,38 @@ export function ReportsClient() {
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Reportes y Análisis</h1>
-        <Button variant="outline" className="flex items-center gap-2">
-          <Download className="w-4 h-4" />
-          Exportar
-        </Button>
+      <div>
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold text-gray-900">Reportes y Análisis</h1>
+          <p className="text-gray-600">Análisis detallado de tus finanzas</p>
+        </div>
+        <div className="flex">
+          <Button variant="outline" className="flex items-center gap-2 w-full sm:w-auto">
+            <Download className="w-4 h-4" />
+            Exportar
+          </Button>
+        </div>
       </div>
 
       {/* Filtros de período */}
-      <div className="flex gap-2">
-        {(['week', 'month', 'quarter', 'year'] as const).map((p) => (
-          <Button
-            key={p}
-            variant={period === p ? 'default' : 'outline'}
-            onClick={() => updatePeriod(p)}
-            className="capitalize"
-          >
-            {p === 'week' && 'Semana'}
-            {p === 'month' && 'Mes'}
-            {p === 'quarter' && 'Trimestre'}
-            {p === 'year' && 'Año'}
-          </Button>
-        ))}
+      <div className="bg-white p-4 rounded-lg border">
+        <h3 className="text-sm font-medium text-gray-700 mb-3">Período de Análisis</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {(['week', 'month', 'quarter', 'year'] as const).map((p) => (
+            <Button
+              key={p}
+              variant={period === p ? 'default' : 'outline'}
+              onClick={() => updatePeriod(p)}
+              className="capitalize w-full"
+              size="sm"
+            >
+              {p === 'week' && 'Semana'}
+              {p === 'month' && 'Mes'}
+              {p === 'quarter' && 'Trimestre'}
+              {p === 'year' && 'Año'}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {/* Métricas generales */}
@@ -292,31 +301,37 @@ export function ReportsClient() {
       </div>
 
       {/* Selector de gráficas */}
-      <div className="flex gap-2 border-b">
-        <Button
-          variant={activeChart === 'category-pie' ? 'default' : 'ghost'}
-          onClick={() => setActiveChart('category-pie')}
-          className="flex items-center gap-2"
-        >
-          <PieIcon className="w-4 h-4" />
-          Gastos por Categoría
-        </Button>
-        <Button
-          variant={activeChart === 'category-bar' ? 'default' : 'ghost'}
-          onClick={() => setActiveChart('category-bar')}
-          className="flex items-center gap-2"
-        >
-          <BarChart3 className="w-4 h-4" />
-          Comparativa
-        </Button>
-        <Button
-          variant={activeChart === 'evolution' ? 'default' : 'ghost'}
-          onClick={() => setActiveChart('evolution')}
-          className="flex items-center gap-2"
-        >
-          <LineIcon className="w-4 h-4" />
-          Evolución Temporal
-        </Button>
+      <div className="bg-white p-4 rounded-lg border">
+        <h3 className="text-sm font-medium text-gray-700 mb-3">Tipo de Análisis</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <Button
+            variant={activeChart === 'category-pie' ? 'default' : 'outline'}
+            onClick={() => setActiveChart('category-pie')}
+            className="flex items-center gap-2 w-full justify-start"
+            size="sm"
+          >
+            <PieIcon className="w-4 h-4" />
+            Gastos por Categoría
+          </Button>
+          <Button
+            variant={activeChart === 'category-bar' ? 'default' : 'outline'}
+            onClick={() => setActiveChart('category-bar')}
+            className="flex items-center gap-2 w-full justify-start"
+            size="sm"
+          >
+            <BarChart3 className="w-4 h-4" />
+            Comparativa
+          </Button>
+          <Button
+            variant={activeChart === 'evolution' ? 'default' : 'outline'}
+            onClick={() => setActiveChart('evolution')}
+            className="flex items-center gap-2 w-full justify-start"
+            size="sm"
+          >
+            <LineIcon className="w-4 h-4" />
+            Evolución Temporal
+          </Button>
+        </div>
       </div>
 
       {/* Gráficas */}
