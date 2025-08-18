@@ -56,17 +56,17 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="space-y-4">
         <div className="flex items-center space-x-4">
           <Link href="/dashboard/credit-cards">
             <Button variant="ghost" size="icon">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center space-x-3">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center space-x-3">
               <CreditCardIcon className="h-6 w-6 text-blue-600" />
-              <span>{creditCard.name}</span>
+              <span className="truncate">{creditCard.name}</span>
               {!creditCard.isActive && (
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600">
                   Inactiva
@@ -78,17 +78,20 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
             </p>
           </div>
         </div>
-        <div className="flex space-x-3">
+        
+        {/* Action buttons in their own line for mobile */}
+        <div className="flex flex-col sm:flex-row gap-3 w-full">
           <Button
             onClick={() => setShowPaymentForm(!showPaymentForm)}
             variant={showPaymentForm ? "outline" : "default"}
             disabled={parseFloat(creditCard.currentBalance) <= 0}
+            className="w-full sm:w-auto"
           >
             <Plus className="h-4 w-4 mr-2" />
             {showPaymentForm ? 'Cancelar Pago' : 'Realizar Pago'}
           </Button>
-          <Link href={`/dashboard/credit-cards/${creditCard.id}/edit`}>
-            <Button variant="outline">
+          <Link href={`/dashboard/credit-cards/${creditCard.id}/edit`} className="w-full sm:w-auto">
+            <Button variant="outline" className="w-full">
               <Edit className="h-4 w-4 mr-2" />
               Editar
             </Button>

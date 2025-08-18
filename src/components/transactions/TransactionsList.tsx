@@ -73,10 +73,10 @@ export function TransactionsList({ transactions, onTransactionUpdate }: Transact
         >
           {/* Mobile Layout */}
           <div className="block sm:hidden">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center space-x-3">
+            <div className="flex items-start justify-between mb-2">
+              <div className="flex items-center space-x-3 flex-1 min-w-0">
                 {/* Type Icon */}
-                <div className={`p-2 rounded-lg ${
+                <div className={`p-2 rounded-lg flex-shrink-0 ${
                   transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
                 }`}>
                   {transaction.type === 'income' ? (
@@ -87,8 +87,8 @@ export function TransactionsList({ transactions, onTransactionUpdate }: Transact
                 </div>
 
                 {/* Transaction Description and Amount */}
-                <div className="flex-1">
-                  <h3 className="text-sm font-medium text-gray-900 mb-1">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-medium text-gray-900 mb-1 truncate">
                     {transaction.description}
                   </h3>
                   <span className={`text-lg font-semibold ${
@@ -100,21 +100,9 @@ export function TransactionsList({ transactions, onTransactionUpdate }: Transact
               </div>
             </div>
 
-            {/* Category */}
-            {transaction.category && (
-              <div className="mb-2">
-                <span 
-                  className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white"
-                  style={{ backgroundColor: transaction.category.color }}
-                >
-                  {transaction.category.name}
-                </span>
-              </div>
-            )}
-
-            {/* Date and Payment Method */}
-            <div className="flex flex-col space-y-1 mb-3">
-              <span className="text-sm text-gray-600">
+            {/* Date and Account/Card in same line with truncation */}
+            <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+              <span>
                 {new Date(transaction.date).toLocaleDateString('es-ES', {
                   day: '2-digit',
                   month: 'short',
@@ -122,13 +110,13 @@ export function TransactionsList({ transactions, onTransactionUpdate }: Transact
                 })}
               </span>
               
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center space-x-1 flex-shrink-0 min-w-0 max-w-[50%]">
                 {transaction.paymentMethod === 'cash' ? (
-                  <Wallet className="h-4 w-4 text-gray-400" />
+                  <Wallet className="h-4 w-4 text-gray-400 flex-shrink-0" />
                 ) : (
-                  <CreditCard className="h-4 w-4 text-gray-400" />
+                  <CreditCard className="h-4 w-4 text-gray-400 flex-shrink-0" />
                 )}
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600 truncate">
                   {transaction.paymentMethod === 'cash' 
                     ? transaction.account?.name || 'Efectivo'
                     : transaction.card?.name || 'Tarjeta'
@@ -137,31 +125,43 @@ export function TransactionsList({ transactions, onTransactionUpdate }: Transact
               </div>
             </div>
 
-            {/* Notes */}
-            {transaction.notes && (
-              <p className="text-sm text-gray-500 mb-3">{transaction.notes}</p>
-            )}
-
-            {/* Action Buttons - Full width on mobile */}
-            <div className="flex space-x-2">
-              <Link href={`/dashboard/transactions/${transaction.id}/edit`} className="flex-1">
-                <Button variant="outline" size="sm" className="w-full">
-                  <Edit className="h-4 w-4 mr-2" />
-                  Editar
-                </Button>
-              </Link>
+            {/* Category and Action icons in same line */}
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                {transaction.category && (
+                  <span 
+                    className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white"
+                    style={{ backgroundColor: transaction.category.color }}
+                  >
+                    {transaction.category.name}
+                  </span>
+                )}
+              </div>
               
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => handleDelete(transaction.id)}
-                disabled={deletingId === transaction.id}
-                className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200"
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Eliminar
-              </Button>
+              {/* Action Icons - only icons */}
+              <div className="flex space-x-1 flex-shrink-0">
+                <Link href={`/dashboard/transactions/${transaction.id}/edit`}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                </Link>
+                
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => handleDelete(transaction.id)}
+                  disabled={deletingId === transaction.id}
+                  className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
+
+            {/* Notes - if present */}
+            {transaction.notes && (
+              <p className="text-sm text-gray-500 mt-2 truncate">{transaction.notes}</p>
+            )}
           </div>
 
           {/* Desktop Layout */}

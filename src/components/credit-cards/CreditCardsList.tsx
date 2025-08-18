@@ -75,96 +75,103 @@ export function CreditCardsList({ creditCards }: CreditCardsListProps) {
         return (
           <div
             key={card.id}
-            className="p-6 hover:bg-gray-50 transition-colors"
+            className="p-4 md:p-6 hover:bg-gray-50 transition-colors"
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                {/* Card Icon */}
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <CreditCard className="h-6 w-6 text-blue-600" />
-                </div>
-
-                {/* Card Info */}
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3">
-                    <h3 className="text-lg font-medium text-gray-900">
+            {/* Mobile-first layout */}
+            <div className="space-y-4">
+              {/* Header with name and actions */}
+              <div className="flex items-start justify-between">
+                <div className="flex items-center space-x-3 flex-1 min-w-0">
+                  {/* Card Icon */}
+                  <div className="p-2 md:p-3 bg-blue-100 rounded-lg flex-shrink-0">
+                    <CreditCard className="h-5 w-5 md:h-6 md:w-6 text-blue-600" />
+                  </div>
+                  
+                  {/* Name and status */}
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-base md:text-lg font-medium text-gray-900 truncate">
                       {card.name}
                     </h3>
                     {!card.isActive && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 mt-1">
                         Inactiva
                       </span>
                     )}
                   </div>
+                </div>
+
+                {/* Actions - positioned at top right */}
+                <div className="flex space-x-1 flex-shrink-0">
+                  <Link href={`/dashboard/credit-cards/${card.id}`}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                  </Link>
                   
-                  <div className="mt-2 space-y-2">
-                    {/* Credit Information */}
-                    <div className="flex items-center space-x-6 text-sm text-gray-600">
-                      <span>
-                        <strong>Límite:</strong> {formatCurrency(parseFloat(card.creditLimit))}
-                      </span>
-                      <span>
-                        <strong>Disponible:</strong> 
-                        <span className={availableCredit < parseFloat(card.creditLimit) * 0.1 ? 'text-red-600 font-medium' : 'text-green-600'}>
-                          {formatCurrency(availableCredit)}
-                        </span>
-                      </span>
-                      <span>
-                        <strong>Utilizado:</strong> {formatCurrency(parseFloat(card.currentBalance))}
-                      </span>
-                    </div>
-
-                    {/* Utilization Bar */}
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className={`h-2 rounded-full transition-all ${
-                          utilizationPercentage > 80 ? 'bg-red-500' :
-                          utilizationPercentage > 60 ? 'bg-yellow-500' :
-                          'bg-green-500'
-                        }`}
-                        style={{ width: `${Math.min(utilizationPercentage, 100)}%` }}
-                      />
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      Utilización: {utilizationPercentage.toFixed(1)}%
-                    </div>
-
-                    {/* Payment Info */}
-                    <div className="flex items-center space-x-6 text-sm text-gray-600">
-                      <span>
-                        <strong>Corte:</strong> Día {card.cutDay}
-                      </span>
-                      <span>
-                        <strong>Vencimiento:</strong> Día {card.dueDay}
-                      </span>
-                    </div>
-                  </div>
+                  <Link href={`/dashboard/credit-cards/${card.id}/edit`}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                  
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => handleDelete(card.id)}
+                    disabled={deletingId === card.id}
+                    className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
 
-              {/* Actions */}
-              <div className="flex space-x-2">
-                <Link href={`/dashboard/credit-cards/${card.id}`}>
-                  <Button variant="ghost" size="icon">
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                </Link>
-                
-                <Link href={`/dashboard/credit-cards/${card.id}/edit`}>
-                  <Button variant="ghost" size="icon">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                </Link>
-                
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => handleDelete(card.id)}
-                  disabled={deletingId === card.id}
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+              {/* Credit Information - Mobile optimized */}
+              <div className="space-y-3">
+                {/* Límite y Utilizado */}
+                <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-2 sm:space-y-0">
+                  <div className="text-sm text-gray-600">
+                    <span className="font-medium">Límite:</span> {formatCurrency(parseFloat(card.creditLimit))}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    <span className="font-medium">Utilizado:</span> {formatCurrency(parseFloat(card.currentBalance))}
+                  </div>
+                </div>
+
+                {/* Disponible - moved below title as requested */}
+                <div className="text-sm">
+                  <div className="font-medium text-gray-600">Disponible:</div>
+                  <div className={`text-lg font-semibold ${availableCredit < parseFloat(card.creditLimit) * 0.1 ? 'text-red-600' : 'text-green-600'}`}>
+                    {formatCurrency(availableCredit)}
+                  </div>
+                </div>
+
+                {/* Utilization Bar */}
+                <div className="space-y-1">
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      className={`h-2 rounded-full transition-all ${
+                        utilizationPercentage > 80 ? 'bg-red-500' :
+                        utilizationPercentage > 60 ? 'bg-yellow-500' :
+                        'bg-green-500'
+                      }`}
+                      style={{ width: `${Math.min(utilizationPercentage, 100)}%` }}
+                    />
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    Utilización: {utilizationPercentage.toFixed(1)}%
+                  </div>
+                </div>
+
+                {/* Payment Info */}
+                <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-1 sm:space-y-0 text-sm text-gray-600">
+                  <span>
+                    <span className="font-medium">Corte:</span> Día {card.cutDay}
+                  </span>
+                  <span>
+                    <span className="font-medium">Vencimiento:</span> Día {card.dueDay}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
