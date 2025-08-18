@@ -24,7 +24,7 @@ export default async function Home() {
               Gestiona tus finanzas personales de manera inteligente y sencilla
             </p>
             
-            <div className="space-y-3">
+            <div className="space-y-6">
               <Link href="/auth/signin">
                 <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium">
                   Iniciar Sesión
