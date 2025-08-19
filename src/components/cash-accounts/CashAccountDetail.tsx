@@ -105,7 +105,7 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
               <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
                 <DollarSign className="h-6 w-6 text-green-600" />
               </div>
-              <p className="text-sm font-medium text-gray-600">Balance Actual</p>
+              <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Balance Actual</p>
             </div>
             <p className="text-base lg:text-lg font-bold text-green-600 text-right whitespace-nowrap">
               {formatCurrency(account.currentBalance)}
@@ -120,7 +120,7 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
               <div className="p-2 bg-emerald-100 rounded-lg flex-shrink-0">
                 <TrendingUp className="h-6 w-6 text-emerald-600" />
               </div>
-              <p className="text-sm font-medium text-gray-600">Total Ingresos</p>
+              <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Total Ingresos</p>
             </div>
             <p className="text-base lg:text-lg font-bold text-emerald-600 text-right whitespace-nowrap">
               {formatCurrency(stats.income.toString())}
@@ -135,7 +135,7 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
               <div className="p-2 bg-red-100 rounded-lg flex-shrink-0">
                 <TrendingDown className="h-6 w-6 text-red-600" />
               </div>
-              <p className="text-sm font-medium text-gray-600">Total Egresos</p>
+              <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Total Egresos</p>
             </div>
             <p className="text-base lg:text-lg font-bold text-red-600 text-right whitespace-nowrap">
               {formatCurrency(stats.expense.toString())}
@@ -156,7 +156,7 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
                     ? 'text-blue-600' : 'text-orange-600'
                 }`} />
               </div>
-              <p className="text-sm font-medium text-gray-600">Diferencia</p>
+              <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Diferencia</p>
             </div>
             <p className={`text-base lg:text-lg font-bold text-right whitespace-nowrap ${
               parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
@@ -176,7 +176,7 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
               <div className="p-2 bg-slate-100 rounded-lg flex-shrink-0">
                 <DollarSign className="h-6 w-6 text-slate-600" />
               </div>
-              <p className="text-sm font-medium text-gray-600">Balance Inicial</p>
+              <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Balance Inicial</p>
             </div>
             <p className="text-base lg:text-lg font-bold text-slate-600 text-right whitespace-nowrap">
               {formatCurrency(account.initialBalance)}

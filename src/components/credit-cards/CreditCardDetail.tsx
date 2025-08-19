@@ -119,7 +119,7 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
               <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
                 <DollarSign className="h-5 w-5 text-blue-600" />
               </div>
-              <h3 className="text-sm font-medium text-gray-700">Límite de Crédito</h3>
+              <h3 className="text-xs font-medium text-gray-700 whitespace-nowrap">Límite de Crédito</h3>
             </div>
             <p className="text-base lg:text-lg font-bold text-gray-900 text-right whitespace-nowrap">
               {formatCurrency(parseFloat(creditCard.creditLimit))}
@@ -133,7 +133,7 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
               <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
                 <TrendingUp className="h-5 w-5 text-green-600" />
               </div>
-              <h3 className="text-sm font-medium text-gray-700">Crédito Disponible</h3>
+              <h3 className="text-xs font-medium text-gray-700 whitespace-nowrap">Crédito Disponible</h3>
             </div>
             <p className={`text-base lg:text-lg font-bold text-right whitespace-nowrap ${
               availableCredit < parseFloat(creditCard.creditLimit) * 0.1 
@@ -151,7 +151,7 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
               <div className="p-2 bg-red-100 rounded-lg flex-shrink-0">
                 <CreditCardIcon className="h-5 w-5 text-red-600" />
               </div>
-              <h3 className="text-sm font-medium text-gray-700">Saldo Utilizado</h3>
+              <h3 className="text-xs font-medium text-gray-700 whitespace-nowrap">Saldo Utilizado</h3>
             </div>
             <p className="text-base lg:text-lg font-bold text-red-600 text-right whitespace-nowrap">
               {formatCurrency(parseFloat(creditCard.currentBalance))}
@@ -165,7 +165,7 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
               <div className="p-2 bg-yellow-100 rounded-lg flex-shrink-0">
                 <TrendingUp className="h-5 w-5 text-yellow-600" />
               </div>
-              <h3 className="text-sm font-medium text-gray-700">Utilización</h3>
+              <h3 className="text-xs font-medium text-gray-700 whitespace-nowrap">Utilización</h3>
             </div>
             <p className={`text-base lg:text-lg font-bold text-right whitespace-nowrap ${
               utilizationPercentage > 80 ? 'text-red-600' :
