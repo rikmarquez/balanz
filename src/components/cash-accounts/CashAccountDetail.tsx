@@ -103,7 +103,7 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
           <div className="space-y-3">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
-                <DollarSign className="h-6 w-6 text-green-600" />
+                <DollarSign className="h-5 w-5 text-green-600" />
               </div>
               <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Balance Actual</p>
             </div>
@@ -118,7 +118,7 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
           <div className="space-y-3">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-emerald-100 rounded-lg flex-shrink-0">
-                <TrendingUp className="h-6 w-6 text-emerald-600" />
+                <TrendingUp className="h-5 w-5 text-emerald-600" />
               </div>
               <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Total Ingresos</p>
             </div>
@@ -133,7 +133,7 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
           <div className="space-y-3">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-red-100 rounded-lg flex-shrink-0">
-                <TrendingDown className="h-6 w-6 text-red-600" />
+                <TrendingDown className="h-5 w-5 text-red-600" />
               </div>
               <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Total Egresos</p>
             </div>
@@ -151,7 +151,7 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
                 parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
                   ? 'bg-blue-100' : 'bg-orange-100'
               }`}>
-                <BarChart3 className={`h-6 w-6 ${
+                <BarChart3 className={`h-5 w-5 ${
                   parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
                     ? 'text-blue-600' : 'text-orange-600'
                 }`} />
@@ -174,7 +174,7 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
           <div className="space-y-3">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-slate-100 rounded-lg flex-shrink-0">
-                <DollarSign className="h-6 w-6 text-slate-600" />
+                <DollarSign className="h-5 w-5 text-slate-600" />
               </div>
               <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Balance Inicial</p>
             </div>
