@@ -120,7 +120,7 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-medium text-gray-700">Límite de Crédito</h3>
-              <p className="text-xl lg:text-2xl font-bold text-gray-900 break-words">
+              <p className="text-lg lg:text-xl xl:text-2xl font-bold text-gray-900 break-words">
                 {formatCurrency(parseFloat(creditCard.creditLimit))}
               </p>
             </div>
@@ -134,7 +134,7 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-medium text-gray-700">Crédito Disponible</h3>
-              <p className={`text-xl lg:text-2xl font-bold break-words ${
+              <p className={`text-lg lg:text-xl xl:text-2xl font-bold break-words ${
                 availableCredit < parseFloat(creditCard.creditLimit) * 0.1 
                   ? 'text-red-600' 
                   : 'text-green-600'
@@ -152,7 +152,7 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-medium text-gray-700">Saldo Utilizado</h3>
-              <p className="text-xl lg:text-2xl font-bold text-red-600 break-words">
+              <p className="text-lg lg:text-xl xl:text-2xl font-bold text-red-600 break-words">
                 {formatCurrency(parseFloat(creditCard.currentBalance))}
               </p>
             </div>
@@ -166,7 +166,7 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-medium text-gray-700">Utilización</h3>
-              <p className={`text-xl lg:text-2xl font-bold break-words ${
+              <p className={`text-lg lg:text-xl xl:text-2xl font-bold break-words ${
                 utilizationPercentage > 80 ? 'text-red-600' :
                 utilizationPercentage > 60 ? 'text-yellow-600' :
                 'text-green-600'

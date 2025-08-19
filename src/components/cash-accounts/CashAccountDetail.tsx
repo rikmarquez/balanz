@@ -97,16 +97,16 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
       </div>
 
       {/* Account Info Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {/* Balance Actual */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+          <div className="flex items-start space-x-3">
+            <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
               <DollarSign className="h-6 w-6 text-green-600" />
             </div>
-            <div className="ml-4">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-gray-600">Balance Actual</p>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-lg lg:text-xl xl:text-2xl font-bold text-green-600 break-words">
                 {formatCurrency(account.currentBalance)}
               </p>
             </div>
@@ -115,13 +115,13 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
 
         {/* Total Ingresos */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-emerald-100 rounded-lg">
+          <div className="flex items-start space-x-3">
+            <div className="p-2 bg-emerald-100 rounded-lg flex-shrink-0">
               <TrendingUp className="h-6 w-6 text-emerald-600" />
             </div>
-            <div className="ml-4">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-gray-600">Total Ingresos</p>
-              <p className="text-2xl font-bold text-emerald-600">
+              <p className="text-lg lg:text-xl xl:text-2xl font-bold text-emerald-600 break-words">
                 {formatCurrency(stats.income.toString())}
               </p>
             </div>
@@ -130,13 +130,13 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
 
         {/* Total Egresos */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-red-100 rounded-lg">
+          <div className="flex items-start space-x-3">
+            <div className="p-2 bg-red-100 rounded-lg flex-shrink-0">
               <TrendingDown className="h-6 w-6 text-red-600" />
             </div>
-            <div className="ml-4">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-gray-600">Total Egresos</p>
-              <p className="text-2xl font-bold text-red-600">
+              <p className="text-lg lg:text-xl xl:text-2xl font-bold text-red-600 break-words">
                 {formatCurrency(stats.expense.toString())}
               </p>
             </div>
@@ -145,8 +145,8 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
 
         {/* Diferencia */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className={`p-2 rounded-lg ${
+          <div className="flex items-start space-x-3">
+            <div className={`p-2 rounded-lg flex-shrink-0 ${
               parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
                 ? 'bg-blue-100' : 'bg-orange-100'
             }`}>
@@ -155,9 +155,9 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
                   ? 'text-blue-600' : 'text-orange-600'
               }`} />
             </div>
-            <div className="ml-4">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-gray-600">Diferencia</p>
-              <p className={`text-2xl font-bold ${
+              <p className={`text-lg lg:text-xl xl:text-2xl font-bold break-words ${
                 parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
                   ? 'text-blue-600' : 'text-orange-600'
               }`}>
@@ -171,13 +171,13 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
 
         {/* Balance Inicial */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-slate-100 rounded-lg">
+          <div className="flex items-start space-x-3">
+            <div className="p-2 bg-slate-100 rounded-lg flex-shrink-0">
               <DollarSign className="h-6 w-6 text-slate-600" />
             </div>
-            <div className="ml-4">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-gray-600">Balance Inicial</p>
-              <p className="text-2xl font-bold text-slate-600">
+              <p className="text-lg lg:text-xl xl:text-2xl font-bold text-slate-600 break-words">
                 {formatCurrency(account.initialBalance)}
               </p>
             </div>
