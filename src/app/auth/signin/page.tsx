@@ -50,7 +50,7 @@ export default function SignIn() {
         <div className="text-center mb-6">
           <div className="flex justify-center mb-4">
             <Image
-              src="/balanz-vertical.jpg"
+              src="/balanz-solo.png"
               alt="Balanz Logo"
               width={60}
               height={60}

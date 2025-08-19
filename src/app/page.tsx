@@ -18,7 +18,7 @@ export default async function Home() {
           <div className="mb-8">
             <div className="flex justify-center mb-4">
               <Image
-                src="/balanz-vertical.jpg"
+                src="/balanz-solo.png"
                 alt="Balanz Logo"
                 width={80}
                 height={80}

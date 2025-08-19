@@ -45,7 +45,7 @@ export function Sidebar() {
           <div className="flex items-center flex-shrink-0 px-4">
             <div className="flex items-center">
               <Image
-                src="/balanz-vertical.jpg"
+                src="/balanz-solo.png"
                 alt="Balanz Logo"
                 width={32}
                 height={32}
@@ -112,7 +112,7 @@ export function Sidebar() {
               <div className="flex items-center flex-shrink-0 px-4">
                 <div className="flex items-center">
                   <Image
-                    src="/balanz-vertical.jpg"
+                    src="/balanz-solo.png"
                     alt="Balanz Logo"
                     width={32}
                     height={32}

@@ -32,7 +32,7 @@ export function Header({ user }: HeaderProps) {
           </Button>
           <div className="flex items-center ml-4 md:ml-0">
             <Image
-              src="/balanz-vertical.jpg"
+              src="/balanz-solo.png"
               alt="Balanz Logo"
               width={40}
               height={40}
