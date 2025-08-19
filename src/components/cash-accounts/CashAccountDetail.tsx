@@ -100,14 +100,14 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {/* Balance Actual */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3">
               <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
                 <DollarSign className="h-6 w-6 text-green-600" />
               </div>
               <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Balance Actual</p>
             </div>
-            <p className="text-base lg:text-lg font-bold text-green-600 text-right whitespace-nowrap">
+            <p className="text-lg lg:text-xl font-bold text-green-600 text-right">
               {formatCurrency(account.currentBalance)}
             </p>
           </div>
@@ -115,14 +115,14 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
 
         {/* Total Ingresos */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3">
               <div className="p-2 bg-emerald-100 rounded-lg flex-shrink-0">
                 <TrendingUp className="h-6 w-6 text-emerald-600" />
               </div>
               <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Total Ingresos</p>
             </div>
-            <p className="text-base lg:text-lg font-bold text-emerald-600 text-right whitespace-nowrap">
+            <p className="text-lg lg:text-xl font-bold text-emerald-600 text-right">
               {formatCurrency(stats.income.toString())}
             </p>
           </div>
@@ -130,14 +130,14 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
 
         {/* Total Egresos */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3">
               <div className="p-2 bg-red-100 rounded-lg flex-shrink-0">
                 <TrendingDown className="h-6 w-6 text-red-600" />
               </div>
               <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Total Egresos</p>
             </div>
-            <p className="text-base lg:text-lg font-bold text-red-600 text-right whitespace-nowrap">
+            <p className="text-lg lg:text-xl font-bold text-red-600 text-right">
               {formatCurrency(stats.expense.toString())}
             </p>
           </div>
@@ -145,8 +145,8 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
 
         {/* Diferencia */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3">
               <div className={`p-2 rounded-lg flex-shrink-0 ${
                 parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
                   ? 'bg-blue-100' : 'bg-orange-100'
@@ -158,7 +158,7 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
               </div>
               <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Diferencia</p>
             </div>
-            <p className={`text-base lg:text-lg font-bold text-right whitespace-nowrap ${
+            <p className={`text-lg lg:text-xl font-bold text-right ${
               parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
                 ? 'text-blue-600' : 'text-orange-600'
             }`}>
@@ -171,14 +171,14 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
 
         {/* Balance Inicial */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3">
               <div className="p-2 bg-slate-100 rounded-lg flex-shrink-0">
                 <DollarSign className="h-6 w-6 text-slate-600" />
               </div>
               <p className="text-xs font-medium text-gray-600 whitespace-nowrap">Balance Inicial</p>
             </div>
-            <p className="text-base lg:text-lg font-bold text-slate-600 text-right whitespace-nowrap">
+            <p className="text-lg lg:text-xl font-bold text-slate-600 text-right">
               {formatCurrency(account.initialBalance)}
             </p>
           </div>
