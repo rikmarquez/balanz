@@ -18,7 +18,7 @@ interface Transaction {
   account?: {
     name: string
   }
-  creditCard?: {
+  card?: {
     name: string
   }
 }
@@ -119,7 +119,7 @@ export function RecentTransactions() {
                   <div className="flex items-center space-x-2 text-xs text-gray-500">
                     <span>{transaction.category.name}</span>
                     <span>•</span>
-                    <span>{transaction.account?.name || transaction.creditCard?.name}</span>
+                    <span>{transaction.account?.name || transaction.card?.name}</span>
                     <span>•</span>
                     <span>{formatLocalDate(transaction.date, { day: '2-digit', month: '2-digit', year: 'numeric' })}</span>
                   </div>
