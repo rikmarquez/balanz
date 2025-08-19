@@ -5,6 +5,7 @@ import { User } from '@/types';
 import { Bell, Menu, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useMobileMenu } from './MobileMenuProvider';
+import Image from 'next/image';
 
 interface HeaderProps {
   user: User;
@@ -29,13 +30,22 @@ export function Header({ user }: HeaderProps) {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <div className="ml-4 md:ml-0">
-            <h1 className="text-lg font-semibold text-gray-900">
-              Bienvenido, {user.name}
-            </h1>
-            <p className="text-sm text-gray-600">
-              Gestiona tus finanzas personales
-            </p>
+          <div className="flex items-center ml-4 md:ml-0">
+            <Image
+              src="/balanz-vertical.jpg"
+              alt="Balanz Logo"
+              width={40}
+              height={40}
+              className="rounded-lg mr-3"
+            />
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900">
+                Bienvenido, {user.name}
+              </h1>
+              <p className="text-sm text-gray-600">
+                Gestiona tus finanzas personales
+              </p>
+            </div>
           </div>
         </div>
         

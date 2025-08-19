@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -15,6 +16,15 @@ export default async function Home() {
       <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8">
         <div className="text-center">
           <div className="mb-8">
+            <div className="flex justify-center mb-4">
+              <Image
+                src="/balanz-vertical.jpg"
+                alt="Balanz Logo"
+                width={80}
+                height={80}
+                className="rounded-xl"
+              />
+            </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-2">Balanz</h1>
             <p className="text-gray-600">Control de gastos personal</p>
           </div>

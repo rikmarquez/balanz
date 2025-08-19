@@ -19,7 +19,11 @@
       "Bash(pkill:*)",
       "Bash(taskkill:*)",
       "Bash(git commit:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(npx tsx:*)",
+      "Bash(move favicon.ico public )",
+      "Bash(move balanz-logo.jpg public)",
+      "Bash(mv:*)"
     ],
     "deny": [],
     "ask": [],

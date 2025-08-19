@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useMobileMenu } from './MobileMenuProvider';
+import Image from 'next/image';
 import { 
   LayoutDashboard, 
   Wallet, 
@@ -43,9 +44,13 @@ export function Sidebar() {
         <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-white border-r border-gray-200">
           <div className="flex items-center flex-shrink-0 px-4">
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">B</span>
-              </div>
+              <Image
+                src="/balanz-vertical.jpg"
+                alt="Balanz Logo"
+                width={32}
+                height={32}
+                className="rounded-lg"
+              />
               <span className="ml-2 text-xl font-bold text-gray-900">Balanz</span>
             </div>
           </div>
@@ -106,9 +111,13 @@ export function Sidebar() {
             <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
               <div className="flex items-center flex-shrink-0 px-4">
                 <div className="flex items-center">
-                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">B</span>
-                  </div>
+                  <Image
+                    src="/balanz-vertical.jpg"
+                    alt="Balanz Logo"
+                    width={32}
+                    height={32}
+                    className="rounded-lg"
+                  />
                   <span className="ml-2 text-xl font-bold text-gray-900">Balanz</span>
                 </div>
               </div>

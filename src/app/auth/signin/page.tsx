@@ -3,6 +3,7 @@
 import { signIn, getSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 
 export default function SignIn() {
   const router = useRouter()
@@ -47,6 +48,15 @@ export default function SignIn() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6">
         <div className="text-center mb-6">
+          <div className="flex justify-center mb-4">
+            <Image
+              src="/balanz-vertical.jpg"
+              alt="Balanz Logo"
+              width={60}
+              height={60}
+              className="rounded-lg"
+            />
+          </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Balanz</h1>
           <p className="text-gray-600">Control de gastos personal</p>
         </div>
