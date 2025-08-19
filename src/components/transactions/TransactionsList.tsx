@@ -1,7 +1,7 @@
 'use client';
 
 import { Transaction } from '@/types';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, formatLocalDate } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Edit, CreditCard, Wallet, TrendingUp, TrendingDown, Trash2 } from 'lucide-react';
 import Link from 'next/link';
@@ -103,11 +103,7 @@ export function TransactionsList({ transactions, onTransactionUpdate }: Transact
             {/* Date and Account/Card in same line with truncation */}
             <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
               <span>
-                {new Date(transaction.date).toLocaleDateString('es-ES', {
-                  day: '2-digit',
-                  month: 'short',
-                  year: 'numeric'
-                })}
+                {formatLocalDate(transaction.date)}
               </span>
               
               <div className="flex items-center space-x-1 flex-shrink-0 min-w-0 max-w-[50%]">
@@ -196,11 +192,7 @@ export function TransactionsList({ transactions, onTransactionUpdate }: Transact
                 
                 <div className="flex items-center space-x-4 mt-1">
                   <span className="text-sm text-gray-600">
-                    {new Date(transaction.date).toLocaleDateString('es-ES', {
-                      day: '2-digit',
-                      month: 'short',
-                      year: 'numeric'
-                    })}
+                    {formatLocalDate(transaction.date)}
                   </span>
                   
                   <div className="flex items-center space-x-1">

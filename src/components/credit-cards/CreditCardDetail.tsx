@@ -112,15 +112,15 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
       )}
 
       {/* Card Overview */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
+          <div className="flex items-start space-x-3">
+            <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
               <DollarSign className="h-5 w-5 text-blue-600" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <h3 className="text-sm font-medium text-gray-700">Límite de Crédito</h3>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-xl lg:text-2xl font-bold text-gray-900 break-words">
                 {formatCurrency(parseFloat(creditCard.creditLimit))}
               </p>
             </div>
@@ -128,13 +128,13 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-green-100 rounded-lg">
+          <div className="flex items-start space-x-3">
+            <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
               <TrendingUp className="h-5 w-5 text-green-600" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <h3 className="text-sm font-medium text-gray-700">Crédito Disponible</h3>
-              <p className={`text-2xl font-bold ${
+              <p className={`text-xl lg:text-2xl font-bold break-words ${
                 availableCredit < parseFloat(creditCard.creditLimit) * 0.1 
                   ? 'text-red-600' 
                   : 'text-green-600'
@@ -146,13 +146,13 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-red-100 rounded-lg">
+          <div className="flex items-start space-x-3">
+            <div className="p-2 bg-red-100 rounded-lg flex-shrink-0">
               <CreditCardIcon className="h-5 w-5 text-red-600" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <h3 className="text-sm font-medium text-gray-700">Saldo Utilizado</h3>
-              <p className="text-2xl font-bold text-red-600">
+              <p className="text-xl lg:text-2xl font-bold text-red-600 break-words">
                 {formatCurrency(parseFloat(creditCard.currentBalance))}
               </p>
             </div>
@@ -160,13 +160,13 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-yellow-100 rounded-lg">
+          <div className="flex items-start space-x-3">
+            <div className="p-2 bg-yellow-100 rounded-lg flex-shrink-0">
               <TrendingUp className="h-5 w-5 text-yellow-600" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <h3 className="text-sm font-medium text-gray-700">Utilización</h3>
-              <p className={`text-2xl font-bold ${
+              <p className={`text-xl lg:text-2xl font-bold break-words ${
                 utilizationPercentage > 80 ? 'text-red-600' :
                 utilizationPercentage > 60 ? 'text-yellow-600' :
                 'text-green-600'

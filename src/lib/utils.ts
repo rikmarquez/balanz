@@ -22,3 +22,16 @@ export function formatDate(date: string | Date): string {
     day: 'numeric',
   }).format(dateObj);
 }
+
+// Función para formatear fechas localmente sin problemas de timezone
+export function formatLocalDate(dateString: string, options: {
+  day?: '2-digit' | 'numeric',
+  month?: '2-digit' | 'short' | 'long' | 'numeric', 
+  year?: 'numeric' | '2-digit'
+} = { day: '2-digit', month: 'short', year: 'numeric' }): string {
+  // Parsear la fecha como local (YYYY-MM-DD) evitando conversión UTC
+  const [year, month, day] = dateString.split('T')[0].split('-').map(num => parseInt(num, 10));
+  const localDate = new Date(year, month - 1, day); // month is 0-indexed
+  
+  return localDate.toLocaleDateString('es-ES', options);
+}

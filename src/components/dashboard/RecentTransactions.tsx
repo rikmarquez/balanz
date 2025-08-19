@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Clock, TrendingUp, TrendingDown } from 'lucide-react'
 import Link from 'next/link'
-import { format } from 'date-fns'
+import { formatLocalDate } from '@/lib/utils'
 
 interface Transaction {
   id: string
@@ -121,7 +121,7 @@ export function RecentTransactions() {
                     <span>•</span>
                     <span>{transaction.account?.name || transaction.creditCard?.name}</span>
                     <span>•</span>
-                    <span>{format(new Date(transaction.date), 'dd/MM/yyyy')}</span>
+                    <span>{formatLocalDate(transaction.date, { day: '2-digit', month: '2-digit', year: 'numeric' })}</span>
                   </div>
                 </div>
               </div>
