@@ -114,66 +114,66 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
       {/* Card Overview */}
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-start space-x-3">
-            <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
-              <DollarSign className="h-5 w-5 text-blue-600" />
-            </div>
-            <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+              <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
+                <DollarSign className="h-5 w-5 text-blue-600" />
+              </div>
               <h3 className="text-sm font-medium text-gray-700">Límite de Crédito</h3>
-              <p className="text-lg lg:text-xl xl:text-2xl font-bold text-gray-900 break-words">
-                {formatCurrency(parseFloat(creditCard.creditLimit))}
-              </p>
             </div>
+            <p className="text-base lg:text-lg font-bold text-gray-900 text-right whitespace-nowrap">
+              {formatCurrency(parseFloat(creditCard.creditLimit))}
+            </p>
           </div>
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-start space-x-3">
-            <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
-              <TrendingUp className="h-5 w-5 text-green-600" />
-            </div>
-            <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+              <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
+                <TrendingUp className="h-5 w-5 text-green-600" />
+              </div>
               <h3 className="text-sm font-medium text-gray-700">Crédito Disponible</h3>
-              <p className={`text-lg lg:text-xl xl:text-2xl font-bold break-words ${
-                availableCredit < parseFloat(creditCard.creditLimit) * 0.1 
-                  ? 'text-red-600' 
-                  : 'text-green-600'
-              }`}>
-                {formatCurrency(availableCredit)}
-              </p>
             </div>
+            <p className={`text-base lg:text-lg font-bold text-right whitespace-nowrap ${
+              availableCredit < parseFloat(creditCard.creditLimit) * 0.1 
+                ? 'text-red-600' 
+                : 'text-green-600'
+            }`}>
+              {formatCurrency(availableCredit)}
+            </p>
           </div>
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-start space-x-3">
-            <div className="p-2 bg-red-100 rounded-lg flex-shrink-0">
-              <CreditCardIcon className="h-5 w-5 text-red-600" />
-            </div>
-            <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+              <div className="p-2 bg-red-100 rounded-lg flex-shrink-0">
+                <CreditCardIcon className="h-5 w-5 text-red-600" />
+              </div>
               <h3 className="text-sm font-medium text-gray-700">Saldo Utilizado</h3>
-              <p className="text-lg lg:text-xl xl:text-2xl font-bold text-red-600 break-words">
-                {formatCurrency(parseFloat(creditCard.currentBalance))}
-              </p>
             </div>
+            <p className="text-base lg:text-lg font-bold text-red-600 text-right whitespace-nowrap">
+              {formatCurrency(parseFloat(creditCard.currentBalance))}
+            </p>
           </div>
         </div>
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-start space-x-3">
-            <div className="p-2 bg-yellow-100 rounded-lg flex-shrink-0">
-              <TrendingUp className="h-5 w-5 text-yellow-600" />
-            </div>
-            <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+              <div className="p-2 bg-yellow-100 rounded-lg flex-shrink-0">
+                <TrendingUp className="h-5 w-5 text-yellow-600" />
+              </div>
               <h3 className="text-sm font-medium text-gray-700">Utilización</h3>
-              <p className={`text-lg lg:text-xl xl:text-2xl font-bold break-words ${
-                utilizationPercentage > 80 ? 'text-red-600' :
-                utilizationPercentage > 60 ? 'text-yellow-600' :
-                'text-green-600'
-              }`}>
-                {utilizationPercentage.toFixed(1)}%
-              </p>
             </div>
+            <p className={`text-base lg:text-lg font-bold text-right whitespace-nowrap ${
+              utilizationPercentage > 80 ? 'text-red-600' :
+              utilizationPercentage > 60 ? 'text-yellow-600' :
+              'text-green-600'
+            }`}>
+              {utilizationPercentage.toFixed(1)}%
+            </p>
           </div>
         </div>
       </div>

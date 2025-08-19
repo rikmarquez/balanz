@@ -100,87 +100,87 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {/* Balance Actual */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-start space-x-3">
-            <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
-              <DollarSign className="h-6 w-6 text-green-600" />
-            </div>
-            <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+              <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
+                <DollarSign className="h-6 w-6 text-green-600" />
+              </div>
               <p className="text-sm font-medium text-gray-600">Balance Actual</p>
-              <p className="text-lg lg:text-xl xl:text-2xl font-bold text-green-600 break-words">
-                {formatCurrency(account.currentBalance)}
-              </p>
             </div>
+            <p className="text-base lg:text-lg font-bold text-green-600 text-right whitespace-nowrap">
+              {formatCurrency(account.currentBalance)}
+            </p>
           </div>
         </div>
 
         {/* Total Ingresos */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-start space-x-3">
-            <div className="p-2 bg-emerald-100 rounded-lg flex-shrink-0">
-              <TrendingUp className="h-6 w-6 text-emerald-600" />
-            </div>
-            <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+              <div className="p-2 bg-emerald-100 rounded-lg flex-shrink-0">
+                <TrendingUp className="h-6 w-6 text-emerald-600" />
+              </div>
               <p className="text-sm font-medium text-gray-600">Total Ingresos</p>
-              <p className="text-lg lg:text-xl xl:text-2xl font-bold text-emerald-600 break-words">
-                {formatCurrency(stats.income.toString())}
-              </p>
             </div>
+            <p className="text-base lg:text-lg font-bold text-emerald-600 text-right whitespace-nowrap">
+              {formatCurrency(stats.income.toString())}
+            </p>
           </div>
         </div>
 
         {/* Total Egresos */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-start space-x-3">
-            <div className="p-2 bg-red-100 rounded-lg flex-shrink-0">
-              <TrendingDown className="h-6 w-6 text-red-600" />
-            </div>
-            <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+              <div className="p-2 bg-red-100 rounded-lg flex-shrink-0">
+                <TrendingDown className="h-6 w-6 text-red-600" />
+              </div>
               <p className="text-sm font-medium text-gray-600">Total Egresos</p>
-              <p className="text-lg lg:text-xl xl:text-2xl font-bold text-red-600 break-words">
-                {formatCurrency(stats.expense.toString())}
-              </p>
             </div>
+            <p className="text-base lg:text-lg font-bold text-red-600 text-right whitespace-nowrap">
+              {formatCurrency(stats.expense.toString())}
+            </p>
           </div>
         </div>
 
         {/* Diferencia */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-start space-x-3">
-            <div className={`p-2 rounded-lg flex-shrink-0 ${
-              parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
-                ? 'bg-blue-100' : 'bg-orange-100'
-            }`}>
-              <BarChart3 className={`h-6 w-6 ${
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+              <div className={`p-2 rounded-lg flex-shrink-0 ${
                 parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
-                  ? 'text-blue-600' : 'text-orange-600'
-              }`} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-600">Diferencia</p>
-              <p className={`text-lg lg:text-xl xl:text-2xl font-bold break-words ${
-                parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
-                  ? 'text-blue-600' : 'text-orange-600'
+                  ? 'bg-blue-100' : 'bg-orange-100'
               }`}>
-                {formatCurrency(
-                  (parseFloat(account.currentBalance) - parseFloat(account.initialBalance)).toString()
-                )}
-              </p>
+                <BarChart3 className={`h-6 w-6 ${
+                  parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
+                    ? 'text-blue-600' : 'text-orange-600'
+                }`} />
+              </div>
+              <p className="text-sm font-medium text-gray-600">Diferencia</p>
             </div>
+            <p className={`text-base lg:text-lg font-bold text-right whitespace-nowrap ${
+              parseFloat(account.currentBalance) - parseFloat(account.initialBalance) >= 0 
+                ? 'text-blue-600' : 'text-orange-600'
+            }`}>
+              {formatCurrency(
+                (parseFloat(account.currentBalance) - parseFloat(account.initialBalance)).toString()
+              )}
+            </p>
           </div>
         </div>
 
         {/* Balance Inicial */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-start space-x-3">
-            <div className="p-2 bg-slate-100 rounded-lg flex-shrink-0">
-              <DollarSign className="h-6 w-6 text-slate-600" />
-            </div>
-            <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 min-w-0 flex-shrink">
+              <div className="p-2 bg-slate-100 rounded-lg flex-shrink-0">
+                <DollarSign className="h-6 w-6 text-slate-600" />
+              </div>
               <p className="text-sm font-medium text-gray-600">Balance Inicial</p>
-              <p className="text-lg lg:text-xl xl:text-2xl font-bold text-slate-600 break-words">
-                {formatCurrency(account.initialBalance)}
-              </p>
             </div>
+            <p className="text-base lg:text-lg font-bold text-slate-600 text-right whitespace-nowrap">
+              {formatCurrency(account.initialBalance)}
+            </p>
           </div>
         </div>
       </div>

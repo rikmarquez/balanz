@@ -458,7 +458,7 @@ export function ReportsClient() {
                       className="w-4 h-4 rounded"
                       style={{ backgroundColor: category.color || COLORS[index % COLORS.length] }}
                     />
-                    <span className="font-medium">{category.name}</span>
+                    <span className="font-medium text-gray-900">{category.name}</span>
                   </div>
                   <span className="text-red-600 font-semibold">
                     ${category.value.toLocaleString('es-MX')}
@@ -481,7 +481,7 @@ export function ReportsClient() {
                       className="w-4 h-4 rounded"
                       style={{ backgroundColor: category.color || COLORS[index % COLORS.length] }}
                     />
-                    <span className="font-medium">{category.name}</span>
+                    <span className="font-medium text-gray-900">{category.name}</span>
                   </div>
                   <span className="text-green-600 font-semibold">
                     ${category.value.toLocaleString('es-MX')}
