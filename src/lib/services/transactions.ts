@@ -8,8 +8,8 @@ export const CreateTransactionSchema = z.object({
   amount: z.string().regex(/^\d+(\.\d{1,2})?$/, 'El monto debe ser un número válido'),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'La fecha debe tener formato YYYY-MM-DD'),
   description: z.string().min(1, 'La descripción es requerida').max(255, 'La descripción no puede exceder 255 caracteres'),
-  type: z.enum(['income', 'expense'], {
-    errorMap: () => ({ message: 'El tipo debe ser "income" o "expense"' })
+  type: z.enum(['income', 'expense', 'transfer'], {
+    errorMap: () => ({ message: 'El tipo debe ser "income", "expense" o "transfer"' })
   }),
   paymentMethod: z.enum(['cash', 'credit_card'], {
     errorMap: () => ({ message: 'El método de pago debe ser "cash" o "credit_card"' })
@@ -36,8 +36,8 @@ export const UpdateTransactionSchema = z.object({
   amount: z.string().regex(/^\d+(\.\d{1,2})?$/, 'El monto debe ser un número válido').optional(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'La fecha debe tener formato YYYY-MM-DD').optional(),
   description: z.string().min(1, 'La descripción es requerida').max(255, 'La descripción no puede exceder 255 caracteres').optional(),
-  type: z.enum(['income', 'expense'], {
-    errorMap: () => ({ message: 'El tipo debe ser "income" o "expense"' })
+  type: z.enum(['income', 'expense', 'transfer'], {
+    errorMap: () => ({ message: 'El tipo debe ser "income", "expense" o "transfer"' })
   }).optional(),
   paymentMethod: z.enum(['cash', 'credit_card'], {
     errorMap: () => ({ message: 'El método de pago debe ser "cash" o "credit_card"' })
@@ -244,7 +244,8 @@ export async function getCurrentMonthStats(userId: string) {
       and(
         eq(transactions.userId, userId),
         gte(transactions.date, startDate),
-        lte(transactions.date, endDate)
+        lte(transactions.date, endDate),
+        sql`${transactions.type} != 'transfer'`
       )
     )
     .groupBy(transactions.type);
@@ -289,6 +290,12 @@ async function updateBalancesOnTransaction(
   const amount = parseFloat(transaction.amount);
   const isIncome = transaction.type === 'income';
   const isExpense = transaction.type === 'expense';
+  const isTransfer = transaction.type === 'transfer';
+  
+  // Las transferencias no afectan saldos porque ya se manejan en processCreditCardPayment
+  if (isTransfer) {
+    return;
+  }
   
   // Determinar el factor multiplicador según la acción
   const factor = action === 'create' ? 1 : -1;
@@ -394,7 +401,7 @@ export interface TransactionFilters {
   categoryIds?: string[];
   tagIds?: string[];
   paymentMethod?: 'cash' | 'credit_card';
-  type?: 'income' | 'expense';
+  type?: 'income' | 'expense' | 'transfer';
   accountId?: string;
   cardId?: string;
   searchText?: string;
@@ -512,7 +519,8 @@ export async function getAccountStats(accountId: string, userId: string) {
       and(
         eq(transactions.userId, userId),
         eq(transactions.accountId, accountId),
-        eq(transactions.paymentMethod, 'cash')
+        eq(transactions.paymentMethod, 'cash'),
+        sql`${transactions.type} != 'transfer'`
       )
     )
     .groupBy(transactions.type);

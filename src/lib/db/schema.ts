@@ -60,7 +60,7 @@ export const transactions = pgTable('transactions', {
   amount: decimal('amount', { precision: 12, scale: 2 }).notNull(),
   date: date('date').notNull(),
   description: text('description').notNull(),
-  type: varchar('type', { length: 20 }).notNull(), // 'income' | 'expense'
+  type: varchar('type', { length: 20 }).notNull(), // 'income' | 'expense' | 'transfer'
   paymentMethod: varchar('payment_method', { length: 20 }).notNull(), // 'cash' | 'credit_card'
   categoryId: uuid('category_id').references(() => categories.id).notNull(),
   accountId: uuid('account_id').references(() => cashAccounts.id),

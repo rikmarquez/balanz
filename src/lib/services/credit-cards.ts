@@ -164,10 +164,10 @@ export async function processCreditCardPayment(
     const { getOrCreatePaymentCategory } = await import('./categories');
     const paymentCategoryId = await getOrCreatePaymentCategory(userId);
 
-    // 4. Crear registro de transacción (pago de tarjeta)
+    // 4. Crear registro de transacción (transferencia de pago de tarjeta)
     const { createTransaction } = await import('./transactions');
     const transaction = await createTransaction({
-      type: 'expense',
+      type: 'transfer',
       paymentMethod: 'cash',
       amount: paymentData.amount.toString(),
       description: paymentData.description || `Pago de tarjeta ${card.name}`,

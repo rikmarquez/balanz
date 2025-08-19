@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
         filters.paymentMethod = searchParams.get('paymentMethod') as 'cash' | 'credit_card';
       }
       if (searchParams.get('type')) {
-        filters.type = searchParams.get('type') as 'income' | 'expense';
+        filters.type = searchParams.get('type') as 'income' | 'expense' | 'transfer';
       }
       if (searchParams.get('accountId')) {
         filters.accountId = searchParams.get('accountId')!;

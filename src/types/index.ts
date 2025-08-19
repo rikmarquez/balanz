@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const TransactionTypeSchema = z.enum(['income', 'expense']);
+export const TransactionTypeSchema = z.enum(['income', 'expense', 'transfer']);
 export const PaymentMethodSchema = z.enum(['cash', 'credit_card']);
 export const CategoryTypeSchema = z.enum(['income', 'expense']);
 
