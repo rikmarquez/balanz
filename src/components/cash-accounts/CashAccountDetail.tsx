@@ -7,6 +7,7 @@ import { CashAccount } from '@/types';
 import { formatCurrency } from '@/lib/utils';
 import { ArrowLeft, Edit, Trash2, DollarSign, TrendingUp, TrendingDown, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
+import { RecentTransactions } from '@/components/transactions/RecentTransactions';
 
 interface CashAccountDetailProps {
   account: CashAccount;
@@ -185,16 +186,12 @@ export function CashAccountDetail({ account }: CashAccountDetailProps) {
         </div>
       </div>
 
-      {/* Future: Transaction History */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Historial de movimientos</h2>
-        <div className="text-center py-8">
-          <p className="text-gray-600">Esta funcionalidad estará disponible próximamente</p>
-          <p className="text-sm text-gray-500 mt-2">
-            Aquí podrás ver todas las transacciones asociadas a esta cuenta
-          </p>
-        </div>
-      </div>
+      {/* Recent Transactions */}
+      <RecentTransactions 
+        accountId={account.id} 
+        title="Últimos Movimientos de la Cuenta"
+        limit={10}
+      />
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (

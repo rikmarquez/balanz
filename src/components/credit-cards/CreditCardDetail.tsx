@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { CreditCard } from '@/types';
 import { formatCurrency } from '@/lib/utils';
 import { PaymentForm } from './PaymentForm';
+import { RecentTransactions } from '@/components/transactions/RecentTransactions';
 import { useState } from 'react';
 
 interface CreditCardDetailProps {
@@ -261,6 +262,13 @@ export function CreditCardDetail({ creditCard, onUpdate }: CreditCardDetailProps
           </div>
         </div>
       </div>
+
+      {/* Recent Transactions */}
+      <RecentTransactions 
+        cardId={creditCard.id} 
+        title="Últimos Movimientos de la Tarjeta"
+        limit={10}
+      />
 
       {/* Card Information */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
