@@ -128,7 +128,7 @@ export function RecentTransactions({
                   {transaction.category && (
                     <span 
                       className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium text-white flex-shrink-0"
-                      style={{ backgroundColor: transaction.category.color }}
+                      style={{ backgroundColor: transaction.category.color || '#6B7280' }}
                     >
                       {transaction.category.name}
                     </span>
