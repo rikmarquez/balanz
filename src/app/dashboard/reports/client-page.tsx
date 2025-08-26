@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
 import { PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { Calendar, TrendingUp, PieChart as PieIcon, BarChart3, LineChart as LineIcon, Download } from 'lucide-react'
+import { Calendar, TrendingUp, PieChart as PieIcon, BarChart3, LineChart as LineIcon, Download, CreditCard } from 'lucide-react'
 import { format, subDays, subMonths, startOfMonth, endOfMonth } from 'date-fns'
 
 interface TransactionData {
@@ -37,13 +37,51 @@ interface ChartData {
   balance: number
 }
 
+interface CardPayment {
+  id: string
+  amount: number | string
+  paymentDate: string
+  description?: string
+  createdAt: string
+  card: {
+    id: string
+    name: string
+    creditLimit: number | string
+    currentBalance: number | string
+  }
+  sourceAccount: {
+    id: string
+    name: string
+  }
+}
+
+interface CardPaymentStats {
+  totalPayments: number
+  totalAmount: number
+  paymentsByCard: Record<string, {
+    count: number
+    total: number
+    cardId: string
+    cardName: string
+  }>
+  dateRange: {
+    firstPayment: string | null
+    lastPayment: string | null
+  }
+}
+
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FFC658', '#FF7C7C']
 
 export function ReportsClient() {
   const [transactions, setTransactions] = useState<TransactionData[]>([])
   const [period, setPeriod] = useState<'week' | 'month' | 'quarter' | 'year'>('month')
   const [loading, setLoading] = useState(true)
-  const [activeChart, setActiveChart] = useState<'category-pie' | 'category-bar' | 'evolution'>('category-pie')
+  const [activeChart, setActiveChart] = useState<'category-pie' | 'category-bar' | 'evolution' | 'card-payments'>('category-pie')
+  const [cardPayments, setCardPayments] = useState<CardPayment[]>([])
+  const [cardPaymentStats, setCardPaymentStats] = useState<CardPaymentStats | null>(null)
+  const [loadingPayments, setLoadingPayments] = useState(false)
+  const [availableCards, setAvailableCards] = useState<{id: string, name: string}[]>([])
+  const [selectedCardId, setSelectedCardId] = useState<string>('')
 
   const [dateRange, setDateRange] = useState(() => {
     const end = new Date()
@@ -53,7 +91,23 @@ export function ReportsClient() {
 
   useEffect(() => {
     fetchTransactions()
+    if (activeChart === 'card-payments') {
+      fetchCardPayments()
+    }
   }, [dateRange]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (activeChart === 'card-payments') {
+      fetchAvailableCards()
+      fetchCardPayments()
+    }
+  }, [activeChart]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (activeChart === 'card-payments') {
+      fetchCardPayments()
+    }
+  }, [selectedCardId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchTransactions = async () => {
     try {
@@ -84,6 +138,58 @@ export function ReportsClient() {
       setTransactions([])
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchAvailableCards = async () => {
+    try {
+      const response = await fetch('/api/credit-cards')
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success && data.data) {
+          setAvailableCards(data.data.map((card: any) => ({
+            id: card.id,
+            name: card.name
+          })))
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching available cards:', error)
+      setAvailableCards([])
+    }
+  }
+
+  const fetchCardPayments = async () => {
+    try {
+      setLoadingPayments(true)
+      const params = new URLSearchParams({
+        startDate: format(dateRange.start, 'yyyy-MM-dd'),
+        endDate: format(dateRange.end, 'yyyy-MM-dd')
+      })
+      
+      if (selectedCardId) {
+        params.append('cardId', selectedCardId)
+      }
+      
+      const response = await fetch(`/api/reports/card-payments?${params}`)
+      if (response.ok) {
+        const data = await response.json()
+        
+        if (data.success && data.data) {
+          setCardPayments(data.data.payments || [])
+          setCardPaymentStats(data.data.stats || null)
+        } else {
+          console.error('Unexpected API response format:', data)
+          setCardPayments([])
+          setCardPaymentStats(null)
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching card payments:', error)
+      setCardPayments([])
+      setCardPaymentStats(null)
+    } finally {
+      setLoadingPayments(false)
     }
   }
 
@@ -303,7 +409,7 @@ export function ReportsClient() {
       {/* Selector de gráficas */}
       <div className="bg-white p-4 rounded-lg border">
         <h3 className="text-sm font-medium text-gray-700 mb-3">Tipo de Análisis</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
           <Button
             variant={activeChart === 'category-pie' ? 'default' : 'outline'}
             onClick={() => setActiveChart('category-pie')}
@@ -330,6 +436,15 @@ export function ReportsClient() {
           >
             <LineIcon className="w-4 h-4" />
             Evolución Temporal
+          </Button>
+          <Button
+            variant={activeChart === 'card-payments' ? 'default' : 'outline'}
+            onClick={() => setActiveChart('card-payments')}
+            className="flex items-center gap-2 w-full justify-start"
+            size="sm"
+          >
+            <CreditCard className="w-4 h-4" />
+            Pagos de Tarjetas
           </Button>
         </div>
       </div>
@@ -439,6 +554,147 @@ export function ReportsClient() {
                 <Line type="monotone" dataKey="balance" stroke="#0088FE" name="Balance Acumulado" strokeWidth={3} />
               </LineChart>
             </ResponsiveContainer>
+          </div>
+        )}
+
+        {activeChart === 'card-payments' && (
+          <div className="lg:col-span-2 bg-white p-6 rounded-lg border shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Pagos de Tarjetas de Crédito</h3>
+              
+              {/* Filtro por tarjeta */}
+              {availableCards.length > 0 && (
+                <div className="mt-2 sm:mt-0">
+                  <select
+                    value={selectedCardId}
+                    onChange={(e) => setSelectedCardId(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">Todas las tarjetas</option>
+                    {availableCards.map((card) => (
+                      <option key={card.id} value={card.id}>
+                        {card.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+            {loadingPayments ? (
+              <div className="h-96 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Estadísticas generales */}
+                {cardPaymentStats && (
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <p className="text-sm text-blue-600 font-medium">Total de Pagos</p>
+                      <p className="text-2xl font-bold text-blue-900">{cardPaymentStats.totalPayments}</p>
+                    </div>
+                    <div className="bg-green-50 p-4 rounded-lg">
+                      <p className="text-sm text-green-600 font-medium">Monto Total</p>
+                      <p className="text-2xl font-bold text-green-900">
+                        ${cardPaymentStats.totalAmount.toLocaleString('es-MX')}
+                      </p>
+                    </div>
+                    <div className="bg-purple-50 p-4 rounded-lg">
+                      <p className="text-sm text-purple-600 font-medium">Tarjetas Usadas</p>
+                      <p className="text-2xl font-bold text-purple-900">
+                        {Object.keys(cardPaymentStats.paymentsByCard).length}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Resumen por tarjeta */}
+                {cardPaymentStats && Object.keys(cardPaymentStats.paymentsByCard).length > 0 && (
+                  <div className="mb-6">
+                    <h4 className="text-md font-semibold mb-3 text-gray-800">Resumen por Tarjeta</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {Object.values(cardPaymentStats.paymentsByCard).map((cardData) => (
+                        <div key={cardData.cardId} className="bg-gray-50 p-4 rounded-lg">
+                          <div className="flex items-center justify-between mb-2">
+                            <h5 className="font-medium text-gray-900">{cardData.cardName}</h5>
+                            <CreditCard className="w-5 h-5 text-gray-500" />
+                          </div>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <p className="text-gray-600">Pagos</p>
+                              <p className="font-semibold">{cardData.count}</p>
+                            </div>
+                            <div>
+                              <p className="text-gray-600">Total</p>
+                              <p className="font-semibold text-green-600">
+                                ${cardData.total.toLocaleString('es-MX')}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Lista detallada de pagos */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-md font-semibold text-gray-800">Detalle de Pagos</h4>
+                    {cardPayments.length > 0 && (
+                      <span className="text-sm text-gray-500">
+                        {cardPayments.length} pago{cardPayments.length !== 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </div>
+                  <div className="bg-gray-50 rounded-lg overflow-hidden">
+                    {cardPayments.length > 0 ? (
+                      <div className="divide-y divide-gray-200">
+                        {cardPayments.slice(0, 15).map((payment) => {
+                          const amount = typeof payment.amount === 'string' ? 
+                            parseFloat(payment.amount) : payment.amount;
+                          return (
+                            <div key={payment.id} className="p-4 hover:bg-white transition-colors">
+                              <div className="flex items-center justify-between">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-3 mb-1">
+                                    <CreditCard className="w-4 h-4 text-blue-500" />
+                                    <span className="font-medium text-gray-900">{payment.card.name}</span>
+                                    <span className="text-sm text-gray-500">→</span>
+                                    <span className="text-sm text-gray-700">{payment.sourceAccount.name}</span>
+                                  </div>
+                                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                                    <span>{format(new Date(payment.paymentDate), 'dd/MM/yyyy')}</span>
+                                    {payment.description && (
+                                      <span className="truncate">{payment.description}</span>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <span className="text-lg font-semibold text-green-600">
+                                    ${(amount || 0).toLocaleString('es-MX')}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        {cardPayments.length > 15 && (
+                          <div className="p-4 text-center text-gray-500 text-sm">
+                            ... y {cardPayments.length - 15} pagos más
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="p-8 text-center text-gray-500">
+                        <CreditCard className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                        <p>No hay pagos de tarjetas en el período seleccionado</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
