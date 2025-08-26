@@ -173,7 +173,7 @@ export async function processCreditCardPayment(
       description: paymentData.description || `Pago de tarjeta ${card.name}`,
       accountId: paymentData.accountId,
       categoryId: paymentCategoryId,
-      date: new Date().toISOString().split('T')[0],
+      date: new Date().toLocaleDateString('en-CA'), // formato YYYY-MM-DD en zona horaria local
       tagIds: []
     }, userId);
 

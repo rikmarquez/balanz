@@ -113,6 +113,7 @@ export async function getDefaultCategories() {
     { name: 'Hogar', type: 'expense', color: '#F59E0B' },
     { name: 'Ropa', type: 'expense', color: '#D97706' },
     { name: 'Servicios', type: 'expense', color: '#B45309' },
+    { name: 'Pago de Tarjeta', type: 'expense', color: '#8B5CF6' }, // Categoría para pagos de tarjetas
     { name: 'Otros gastos', type: 'expense', color: '#92400E' },
   ];
 }
@@ -136,7 +137,7 @@ export async function createDefaultCategories(userId: string) {
 }
 
 export async function getOrCreatePaymentCategory(userId: string): Promise<string> {
-  // Buscar si ya existe una categoría para pagos de tarjetas
+  // Buscar la categoría para pagos de tarjetas (debería existir por defecto)
   const existing = await db
     .select()
     .from(categories)
@@ -153,7 +154,7 @@ export async function getOrCreatePaymentCategory(userId: string): Promise<string
     return existing[0].id;
   }
 
-  // Si no existe, crear la categoría
+  // Si no existe (usuarios antiguos), crear la categoría
   const newCategory = await createCategory({
     name: 'Pago de Tarjeta',
     type: 'expense',

@@ -90,8 +90,8 @@ export function ReportsClient() {
   const [selectedCardId, setSelectedCardId] = useState<string>('')
 
   const [dateRange, setDateRange] = useState(() => {
-    const end = new Date()
-    const start = startOfMonth(end)
+    const end = endOfMonth(new Date()) // Usar final del mes para incluir todo el mes actual
+    const start = startOfMonth(new Date())
     return { start, end }
   })
 
@@ -201,24 +201,30 @@ export function ReportsClient() {
 
   const updatePeriod = (newPeriod: typeof period) => {
     setPeriod(newPeriod)
-    const end = new Date()
+    const today = new Date()
     let start: Date
+    let end: Date
 
     switch (newPeriod) {
       case 'week':
+        end = today
         start = subDays(end, 7)
         break
       case 'month':
-        start = startOfMonth(end)
+        end = endOfMonth(today) // Incluir todo el mes actual
+        start = startOfMonth(today)
         break
       case 'quarter':
+        end = today
         start = subMonths(end, 3)
         break
       case 'year':
+        end = today
         start = subMonths(end, 12)
         break
       default:
-        start = startOfMonth(end)
+        end = endOfMonth(today)
+        start = startOfMonth(today)
     }
 
     setDateRange({ start, end })

@@ -48,6 +48,7 @@ export async function GET(request: NextRequest) {
         whereConditions.push(lte(transactions.date, endDate));
       }
 
+
       // Consulta principal con joins
       const payments = await db
         .select({
