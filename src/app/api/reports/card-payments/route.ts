@@ -124,10 +124,18 @@ export async function GET(request: NextRequest) {
           .where(eq(creditCards.id, cardId))
           .limit(1);
         
+        console.log('🔍 Debug filtro tarjeta - cardId seleccionado:', cardId);
+        console.log('🔍 Debug filtro tarjeta - tarjeta encontrada:', selectedCard[0]);
+        console.log('🔍 Debug filtro tarjeta - nombres en pagos:', paymentsWithDetails.map(p => p.card.name));
+        
         if (selectedCard[0]) {
-          filteredPayments = paymentsWithDetails.filter(payment => 
-            payment.card.name === selectedCard[0].name
-          );
+          filteredPayments = paymentsWithDetails.filter(payment => {
+            const match = payment.card.name === selectedCard[0].name;
+            console.log(`🔍 Debug - "${payment.card.name}" === "${selectedCard[0].name}" = ${match}`);
+            return match;
+          });
+          
+          console.log('🔍 Debug - Pagos filtrados:', filteredPayments.length);
         }
       }
 
