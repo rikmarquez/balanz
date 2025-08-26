@@ -614,9 +614,9 @@ export function ReportsClient() {
                       </p>
                     </div>
                     <div className="bg-purple-50 p-4 rounded-lg">
-                      <p className="text-sm text-purple-600 font-medium">Tarjetas Usadas</p>
+                      <p className="text-sm text-purple-600 font-medium">Cuentas Usadas</p>
                       <p className="text-2xl font-bold text-purple-900">
-                        {Object.keys(cardPaymentStats.paymentsByCard).length}
+                        {Object.keys(cardPaymentStats.paymentsByAccount).length}
                       </p>
                     </div>
                   </div>
