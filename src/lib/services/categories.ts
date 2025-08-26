@@ -24,7 +24,10 @@ export type CreateCategoryInput = z.infer<typeof CreateCategorySchema>;
 export type UpdateCategoryInput = z.infer<typeof UpdateCategorySchema>;
 
 export async function getCategories(userId: string, type?: 'income' | 'expense') {
-  const baseCondition = eq(categories.userId, userId);
+  const baseCondition = and(
+    eq(categories.userId, userId),
+    eq(categories.isActive, true)
+  );
   const whereCondition = type 
     ? and(baseCondition, eq(categories.type, type))
     : baseCondition;

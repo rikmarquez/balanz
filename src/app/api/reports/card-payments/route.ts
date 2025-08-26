@@ -130,8 +130,15 @@ export async function GET(request: NextRequest) {
         
         if (selectedCard[0]) {
           filteredPayments = paymentsWithDetails.filter(payment => {
-            const match = payment.card.name === selectedCard[0].name;
-            console.log(`🔍 Debug - "${payment.card.name}" === "${selectedCard[0].name}" = ${match}`);
+            // Comparación exacta
+            const exactMatch = payment.card.name === selectedCard[0].name;
+            
+            // Comparación más flexible: buscar si el nombre de la tarjeta aparece en la descripción
+            const flexibleMatch = payment.description && 
+              payment.description.toLowerCase().includes(selectedCard[0].name.toLowerCase());
+            
+            const match = exactMatch || flexibleMatch;
+            console.log(`🔍 Debug - "${payment.card.name}" === "${selectedCard[0].name}" (exacto: ${exactMatch}, flexible: ${flexibleMatch}) = ${match}`);
             return match;
           });
           

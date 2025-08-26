@@ -23,7 +23,8 @@
       "Bash(npx tsx:*)",
       "Bash(move favicon.ico public )",
       "Bash(move balanz-logo.jpg public)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": [],
