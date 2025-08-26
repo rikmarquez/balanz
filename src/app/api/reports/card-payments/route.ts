@@ -2,8 +2,8 @@ import { NextRequest } from 'next/server';
 import { withAuth, validateMethod } from '@/lib/api/middleware';
 import { successResponse, errorResponse } from '@/lib/api/response';
 import { db } from '@/lib/db';
-import { cardPayments, creditCards, cashAccounts } from '@/lib/db/schema';
-import { eq, and, gte, lte, desc } from 'drizzle-orm';
+import { transactions, creditCards, cashAccounts, categories } from '@/lib/db/schema';
+import { eq, and, gte, lte, desc, like } from 'drizzle-orm';
 
 export async function GET(request: NextRequest) {
   const methodError = validateMethod(request, ['GET']);
@@ -18,55 +18,99 @@ export async function GET(request: NextRequest) {
       const endDate = searchParams.get('endDate');
       const cardId = searchParams.get('cardId');
 
-      // Construir condiciones WHERE
-      const whereConditions = [eq(cardPayments.userId, user.id)];
+      // Construir condiciones WHERE para buscar transacciones de pago de tarjetas
+      const whereConditions = [
+        eq(transactions.userId, user.id),
+        eq(transactions.type, 'transfer'),
+        like(transactions.description, '%Pago de tarjeta%')
+      ];
       
       if (startDate) {
-        whereConditions.push(gte(cardPayments.paymentDate, startDate));
+        whereConditions.push(gte(transactions.date, startDate));
       }
       
       if (endDate) {
-        whereConditions.push(lte(cardPayments.paymentDate, endDate));
-      }
-      
-      if (cardId) {
-        whereConditions.push(eq(cardPayments.cardId, cardId));
+        whereConditions.push(lte(transactions.date, endDate));
       }
 
       // Consulta principal con joins
       const payments = await db
         .select({
-          id: cardPayments.id,
-          amount: cardPayments.amount,
-          paymentDate: cardPayments.paymentDate,
-          description: cardPayments.description,
-          createdAt: cardPayments.createdAt,
-          card: {
-            id: creditCards.id,
-            name: creditCards.name,
-            creditLimit: creditCards.creditLimit,
-            currentBalance: creditCards.currentBalance
-          },
-          sourceAccount: {
-            id: cashAccounts.id,
-            name: cashAccounts.name
+          id: transactions.id,
+          amount: transactions.amount,
+          paymentDate: transactions.date,
+          description: transactions.description,
+          createdAt: transactions.createdAt,
+          accountId: transactions.accountId,
+          category: {
+            name: categories.name
           }
         })
-        .from(cardPayments)
-        .innerJoin(creditCards, eq(cardPayments.cardId, creditCards.id))
-        .innerJoin(cashAccounts, eq(cardPayments.sourceAccountId, cashAccounts.id))
+        .from(transactions)
+        .leftJoin(categories, eq(transactions.categoryId, categories.id))
         .where(and(...whereConditions))
-        .orderBy(desc(cardPayments.paymentDate), desc(cardPayments.createdAt));
+        .orderBy(desc(transactions.date), desc(transactions.createdAt));
 
-      // Calcular estadísticas
+      // Obtener información de las cuentas para los pagos
+      const paymentsWithDetails = await Promise.all(
+        payments.map(async (payment) => {
+          // Extraer nombre de tarjeta de la descripción
+          const cardNameMatch = payment.description?.match(/Pago de tarjeta (.+)$/);
+          const cardName = cardNameMatch ? cardNameMatch[1] : 'Tarjeta desconocida';
+          
+          // Obtener información de la cuenta
+          const account = payment.accountId ? await db
+            .select({ id: cashAccounts.id, name: cashAccounts.name })
+            .from(cashAccounts)
+            .where(eq(cashAccounts.id, payment.accountId))
+            .limit(1) : null;
+
+          return {
+            id: payment.id,
+            amount: payment.amount,
+            paymentDate: payment.paymentDate,
+            description: payment.description,
+            createdAt: payment.createdAt,
+            card: {
+              id: 'extracted',
+              name: cardName,
+              creditLimit: '0',
+              currentBalance: '0'
+            },
+            sourceAccount: {
+              id: account?.[0]?.id || '',
+              name: account?.[0]?.name || 'Cuenta desconocida'
+            }
+          };
+        })
+      );
+
+      // Filtrar por tarjeta específica si se solicita
+      let filteredPayments = paymentsWithDetails;
+      if (cardId) {
+        // Obtener nombre de la tarjeta seleccionada
+        const selectedCard = await db
+          .select({ name: creditCards.name })
+          .from(creditCards)
+          .where(eq(creditCards.id, cardId))
+          .limit(1);
+        
+        if (selectedCard[0]) {
+          filteredPayments = paymentsWithDetails.filter(payment => 
+            payment.card.name === selectedCard[0].name
+          );
+        }
+      }
+
+      // Calcular estadísticas usando los pagos filtrados
       const stats = {
-        totalPayments: payments.length,
-        totalAmount: payments.reduce((sum, payment) => {
+        totalPayments: filteredPayments.length,
+        totalAmount: filteredPayments.reduce((sum, payment) => {
           const amount = typeof payment.amount === 'string' ? 
             parseFloat(payment.amount) : payment.amount;
-          return sum + (amount || 0);
+          return sum + Math.abs(amount || 0); // Usar valor absoluto ya que las transferencias son negativas
         }, 0),
-        paymentsByCard: payments.reduce((acc, payment) => {
+        paymentsByCard: filteredPayments.reduce((acc, payment) => {
           const cardName = payment.card.name;
           const amount = typeof payment.amount === 'string' ? 
             parseFloat(payment.amount) : payment.amount;
@@ -81,7 +125,7 @@ export async function GET(request: NextRequest) {
           }
           
           acc[cardName].count += 1;
-          acc[cardName].total += (amount || 0);
+          acc[cardName].total += Math.abs(amount || 0); // Usar valor absoluto
           
           return acc;
         }, {} as Record<string, {
@@ -90,14 +134,38 @@ export async function GET(request: NextRequest) {
           cardId: string;
           cardName: string;
         }>),
+        paymentsByAccount: filteredPayments.reduce((acc, payment) => {
+          const accountName = payment.sourceAccount.name;
+          const amount = typeof payment.amount === 'string' ? 
+            parseFloat(payment.amount) : payment.amount;
+          
+          if (!acc[accountName]) {
+            acc[accountName] = {
+              count: 0,
+              total: 0,
+              accountId: payment.sourceAccount.id,
+              accountName: accountName
+            };
+          }
+          
+          acc[accountName].count += 1;
+          acc[accountName].total += Math.abs(amount || 0); // Usar valor absoluto
+          
+          return acc;
+        }, {} as Record<string, {
+          count: number;
+          total: number;
+          accountId: string;
+          accountName: string;
+        }>),
         dateRange: {
-          firstPayment: payments.length > 0 ? payments[payments.length - 1].paymentDate : null,
-          lastPayment: payments.length > 0 ? payments[0].paymentDate : null
+          firstPayment: filteredPayments.length > 0 ? filteredPayments[filteredPayments.length - 1].paymentDate : null,
+          lastPayment: filteredPayments.length > 0 ? filteredPayments[0].paymentDate : null
         }
       };
 
       return successResponse({
-        payments,
+        payments: filteredPayments,
         stats
       }, 'Pagos de tarjetas obtenidos exitosamente');
     });

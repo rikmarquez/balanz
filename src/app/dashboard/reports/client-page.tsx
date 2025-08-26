@@ -64,6 +64,12 @@ interface CardPaymentStats {
     cardId: string
     cardName: string
   }>
+  paymentsByAccount: Record<string, {
+    count: number
+    total: number
+    accountId: string
+    accountName: string
+  }>
   dateRange: {
     firstPayment: string | null
     lastPayment: string | null
@@ -565,14 +571,16 @@ export function ReportsClient() {
               {/* Filtro por tarjeta */}
               {availableCards.length > 0 && (
                 <div className="mt-2 sm:mt-0">
+                  <label htmlFor="card-filter" className="sr-only">Filtrar por tarjeta</label>
                   <select
+                    id="card-filter"
                     value={selectedCardId}
                     onChange={(e) => setSelectedCardId(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="px-4 py-2 bg-white border-2 border-gray-300 rounded-lg text-sm font-medium text-gray-900 shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors min-w-[180px]"
                   >
-                    <option value="">Todas las tarjetas</option>
+                    <option value="" className="text-gray-900 bg-white">Todas las tarjetas</option>
                     {availableCards.map((card) => (
-                      <option key={card.id} value={card.id}>
+                      <option key={card.id} value={card.id} className="text-gray-900 bg-white">
                         {card.name}
                       </option>
                     ))}
@@ -637,6 +645,37 @@ export function ReportsClient() {
                   </div>
                 )}
 
+                {/* Resumen por cuenta de origen */}
+                {cardPaymentStats && Object.keys(cardPaymentStats.paymentsByAccount).length > 0 && (
+                  <div className="mb-6">
+                    <h4 className="text-md font-semibold mb-3 text-gray-800">Resumen por Cuenta de Origen</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {Object.values(cardPaymentStats.paymentsByAccount).map((accountData) => (
+                        <div key={accountData.accountId} className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+                          <div className="flex items-center justify-between mb-2">
+                            <h5 className="font-medium text-gray-900">{accountData.accountName}</h5>
+                            <div className="w-5 h-5 bg-blue-400 rounded-full flex items-center justify-center">
+                              <span className="text-xs text-white font-bold">$</span>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <p className="text-blue-700">Pagos realizados</p>
+                              <p className="font-semibold text-blue-900">{accountData.count}</p>
+                            </div>
+                            <div>
+                              <p className="text-blue-700">Total pagado</p>
+                              <p className="font-semibold text-blue-900">
+                                ${accountData.total.toLocaleString('es-MX')}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Lista detallada de pagos */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
@@ -653,6 +692,7 @@ export function ReportsClient() {
                         {cardPayments.slice(0, 15).map((payment) => {
                           const amount = typeof payment.amount === 'string' ? 
                             parseFloat(payment.amount) : payment.amount;
+                          const displayAmount = Math.abs(amount || 0); // Mostrar como valor absoluto
                           return (
                             <div key={payment.id} className="p-4 hover:bg-white transition-colors">
                               <div className="flex items-center justify-between">
@@ -672,7 +712,7 @@ export function ReportsClient() {
                                 </div>
                                 <div className="text-right">
                                   <span className="text-lg font-semibold text-green-600">
-                                    ${(amount || 0).toLocaleString('es-MX')}
+                                    ${displayAmount.toLocaleString('es-MX')}
                                   </span>
                                 </div>
                               </div>
