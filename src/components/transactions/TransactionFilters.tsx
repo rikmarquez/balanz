@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Search, Filter, X, Calendar } from 'lucide-react';
 import { CashAccount, CreditCard, Category, Tag } from '@/types';
+import { getCurrentLocalDate, formatDateToLocal } from '@/utils/dateUtils';
 
 interface TransactionFiltersProps {
   onFiltersChange: (filters: FilterValues) => void;
@@ -123,25 +124,25 @@ export function TransactionFilters({ onFiltersChange, isLoading }: TransactionFi
     
     switch (type) {
       case 'today':
-        startDate = today.toISOString().split('T')[0];
+        startDate = getCurrentLocalDate();
         updateFilter('startDate', startDate);
         updateFilter('endDate', startDate);
         break;
       case 'week':
         const weekAgo = new Date(today);
         weekAgo.setDate(today.getDate() - 7);
-        updateFilter('startDate', weekAgo.toISOString().split('T')[0]);
-        updateFilter('endDate', today.toISOString().split('T')[0]);
+        updateFilter('startDate', formatDateToLocal(weekAgo));
+        updateFilter('endDate', getCurrentLocalDate());
         break;
       case 'month':
         const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-        updateFilter('startDate', monthStart.toISOString().split('T')[0]);
-        updateFilter('endDate', today.toISOString().split('T')[0]);
+        updateFilter('startDate', formatDateToLocal(monthStart));
+        updateFilter('endDate', getCurrentLocalDate());
         break;
       case 'year':
         const yearStart = new Date(today.getFullYear(), 0, 1);
-        updateFilter('startDate', yearStart.toISOString().split('T')[0]);
-        updateFilter('endDate', today.toISOString().split('T')[0]);
+        updateFilter('startDate', formatDateToLocal(yearStart));
+        updateFilter('endDate', getCurrentLocalDate());
         break;
     }
   };

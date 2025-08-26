@@ -7,6 +7,7 @@ import { TagSelector } from '@/components/tags/TagSelector';
 import { ArrowLeft, CreditCard, Wallet, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { Category, CashAccount, CreditCard as CreditCardType, Transaction } from '@/types';
+import { formatDateToLocal } from '@/utils/dateUtils';
 
 interface EditTransactionFormProps {
   transaction: Transaction;
@@ -28,7 +29,7 @@ export function EditTransactionForm({
   
   const [formData, setFormData] = useState({
     amount: transaction.amount.toString(),
-    date: new Date(transaction.date).toISOString().split('T')[0],
+    date: formatDateToLocal(new Date(transaction.date)),
     description: transaction.description,
     type: transaction.type,
     paymentMethod: transaction.paymentMethod,

@@ -7,6 +7,7 @@ import { TagSelector } from '@/components/tags/TagSelector';
 import { ArrowLeft, CreditCard, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { Category, CashAccount, CreditCard as CreditCardType } from '@/types';
+import { getCurrentLocalDate } from '@/utils/dateUtils';
 
 interface CreateTransactionFormProps {
   defaultType: 'income' | 'expense';
@@ -25,7 +26,7 @@ export function CreateTransactionForm({
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     amount: '',
-    date: new Date().toISOString().split('T')[0], // Today's date
+    date: getCurrentLocalDate(), // Today's date in local timezone
     description: '',
     type: defaultType,
     paymentMethod: 'cash' as 'cash' | 'credit_card',
