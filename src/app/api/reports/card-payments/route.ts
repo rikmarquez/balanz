@@ -93,6 +93,9 @@ export async function GET(request: NextRequest) {
             .from(cashAccounts)
             .where(eq(cashAccounts.id, payment.accountId))
             .limit(1) : null;
+            
+          console.log('🔍 Debug cuenta - accountId:', payment.accountId);
+          console.log('🔍 Debug cuenta - resultado query:', account);
 
           return {
             id: payment.id,
@@ -183,6 +186,9 @@ export async function GET(request: NextRequest) {
           const amount = typeof payment.amount === 'string' ? 
             parseFloat(payment.amount) : payment.amount;
           
+          console.log('🔍 Debug estadísticas - accountName:', accountName);
+          console.log('🔍 Debug estadísticas - accountId:', payment.sourceAccount.id);
+          
           if (!acc[accountName]) {
             acc[accountName] = {
               count: 0,
@@ -207,6 +213,9 @@ export async function GET(request: NextRequest) {
           lastPayment: filteredPayments.length > 0 ? filteredPayments[0].paymentDate : null
         }
       };
+
+      console.log('🔍 Debug final - paymentsByAccount:', JSON.stringify(stats.paymentsByAccount, null, 2));
+      console.log('🔍 Debug final - número de cuentas:', Object.keys(stats.paymentsByAccount).length);
 
       return successResponse({
         payments: filteredPayments,
