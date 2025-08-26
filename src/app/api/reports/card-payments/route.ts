@@ -18,12 +18,27 @@ export async function GET(request: NextRequest) {
       const endDate = searchParams.get('endDate');
       const cardId = searchParams.get('cardId');
 
-      // Construir condiciones WHERE para buscar transacciones de pago de tarjetas
-      const whereConditions = [
-        eq(transactions.userId, user.id),
-        eq(transactions.type, 'transfer'),
-        like(transactions.description, '%Pago de tarjeta%')
-      ];
+      // Buscar la categoría exacta "Pago de Tarjeta" que se crea automáticamente
+      const paymentCategory = await db
+        .select({ id: categories.id, name: categories.name })
+        .from(categories)
+        .where(and(
+          eq(categories.userId, user.id),
+          eq(categories.name, 'Pago de Tarjeta'),
+          eq(categories.type, 'expense')
+        ))
+        .limit(1);
+      
+      // Construir condiciones WHERE
+      const whereConditions = [eq(transactions.userId, user.id)];
+      
+      if (paymentCategory.length > 0) {
+        // Usar la categoría específica si existe
+        whereConditions.push(eq(transactions.categoryId, paymentCategory[0].id));
+      } else {
+        // Fallback: buscar por descripción
+        whereConditions.push(like(transactions.description, '%Pago de tarjeta%'));
+      }
       
       if (startDate) {
         whereConditions.push(gte(transactions.date, startDate));
@@ -51,16 +66,29 @@ export async function GET(request: NextRequest) {
         .where(and(...whereConditions))
         .orderBy(desc(transactions.date), desc(transactions.createdAt));
 
-      // Obtener información de las cuentas para los pagos
+      // Obtener información completa de las cuentas para los pagos
       const paymentsWithDetails = await Promise.all(
         payments.map(async (payment) => {
-          // Extraer nombre de tarjeta de la descripción
-          const cardNameMatch = payment.description?.match(/Pago de tarjeta (.+)$/);
-          const cardName = cardNameMatch ? cardNameMatch[1] : 'Tarjeta desconocida';
+          // Extraer nombre de tarjeta de la descripción usando diferentes patrones
+          let cardName = 'Tarjeta desconocida';
+          if (payment.description) {
+            // Patrón principal: "Pago de tarjeta NombreTarjeta"
+            const cardNameMatch = payment.description.match(/Pago de tarjeta (.+)$/);
+            if (cardNameMatch) {
+              cardName = cardNameMatch[1];
+            } else if (payment.description.includes('Pago')) {
+              // Si contiene "Pago" pero no sigue el patrón exacto
+              cardName = payment.description.replace(/^.*Pago.*?(\w+).*$/i, '$1') || 'Tarjeta desconocida';
+            }
+          }
           
-          // Obtener información de la cuenta
+          // Obtener información de la cuenta de origen
           const account = payment.accountId ? await db
-            .select({ id: cashAccounts.id, name: cashAccounts.name })
+            .select({ 
+              id: cashAccounts.id, 
+              name: cashAccounts.name,
+              currentBalance: cashAccounts.currentBalance 
+            })
             .from(cashAccounts)
             .where(eq(cashAccounts.id, payment.accountId))
             .limit(1) : null;
@@ -72,7 +100,7 @@ export async function GET(request: NextRequest) {
             description: payment.description,
             createdAt: payment.createdAt,
             card: {
-              id: 'extracted',
+              id: 'extracted-' + cardName.replace(/\s+/g, '-').toLowerCase(),
               name: cardName,
               creditLimit: '0',
               currentBalance: '0'
