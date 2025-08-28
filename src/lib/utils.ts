@@ -7,11 +7,19 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatCurrency(amount: string | number): string {
   const value = typeof amount === 'string' ? parseFloat(amount) : amount;
-  return new Intl.NumberFormat('es-MX', {
-    style: 'currency',
-    currency: 'MXN',
+  
+  // Formatear con configuración específica de México: punto decimal, coma para miles
+  const formatted = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(value);
+  
+  // Convertir punto decimal a coma para miles y mantener punto para decimales
+  const parts = formatted.split('.');
+  const integerPart = parts[0].replace(/,/g, ','); // Mantener comas para miles
+  const decimalPart = parts[1];
+  
+  return `$${integerPart}.${decimalPart}`;
 }
 
 export function formatDate(date: string | Date): string {

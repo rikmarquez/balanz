@@ -29,7 +29,7 @@ export function EditTransactionForm({
   
   const [formData, setFormData] = useState({
     amount: transaction.amount.toString(),
-    date: formatDateToLocal(new Date(transaction.date)),
+    date: transaction.date.split('T')[0], // Usar solo la parte de fecha YYYY-MM-DD
     description: transaction.description,
     type: transaction.type,
     paymentMethod: transaction.paymentMethod,
