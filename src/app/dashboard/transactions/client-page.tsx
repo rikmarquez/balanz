@@ -91,6 +91,17 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
     .filter(t => t.type === 'expense')
     .reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
+  // EGRESOS = gastos en efectivo + transferencias (pagos de tarjeta)
+  const totalEgresos = transactions
+    .filter(t => 
+      (t.type === 'expense' && t.paymentMethod === 'cash') || 
+      (t.type === 'transfer')
+    )
+    .reduce((sum, t) => sum + parseFloat(t.amount), 0);
+
+  // FLUJO DE EFECTIVO = INGRESOS - EGRESOS
+  const cashFlow = totalIncome - totalEgresos;
+
   const balance = totalIncome - totalExpenses;
 
   // Determinar si hay filtros activos para mostrar indicadores
@@ -122,7 +133,7 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center">
             <div className="p-2 bg-green-100 rounded-lg">
@@ -187,6 +198,52 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
               </div>
               <p className={`text-2xl font-bold ${balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
                 ${balance.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="flex items-center">
+            <div className="p-2 bg-orange-100 rounded-lg">
+              <TrendingDown className="h-6 w-6 text-orange-600" />
+            </div>
+            <div className="ml-4 flex-1">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-gray-600">
+                  Egresos{hasActiveFilters && ' (Filtrados)'}
+                </p>
+                {hasActiveFilters && (
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    Filtrado
+                  </span>
+                )}
+              </div>
+              <p className="text-2xl font-bold text-orange-600">
+                ${totalEgresos.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="flex items-center">
+            <div className={`p-2 rounded-lg ${cashFlow >= 0 ? 'bg-purple-100' : 'bg-red-100'}`}>
+              <Plus className={`h-6 w-6 ${cashFlow >= 0 ? 'text-purple-600' : 'text-red-600'}`} />
+            </div>
+            <div className="ml-4 flex-1">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-gray-600">
+                  Flujo de Efectivo{hasActiveFilters && ' (Filtrado)'}
+                </p>
+                {hasActiveFilters && (
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    Filtrado
+                  </span>
+                )}
+              </div>
+              <p className={`text-2xl font-bold ${cashFlow >= 0 ? 'text-purple-600' : 'text-red-600'}`}>
+                ${cashFlow.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
               </p>
             </div>
           </div>
