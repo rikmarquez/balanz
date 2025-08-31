@@ -535,7 +535,7 @@ El proyecto Balanz está **100% completado** con todas las funcionalidades princ
 
 ### **🔗 Commits realizados:**
 - **Primera sesión** - ID: `033c7f1` - Métricas de Egresos y Flujo de Efectivo
-- **Segunda sesión** - PENDIENTE - Filtros avanzados de tipo de egreso
+- **Segunda sesión** - ID: `5a82316` - Filtros avanzados de tipo de egreso ✅
 
 ---
 
@@ -568,10 +568,11 @@ El proyecto Balanz está **100% completado** con todas las funcionalidades princ
 - `src/app/api/transactions/route.ts`
 - `src/app/dashboard/transactions/client-page.tsx`
 
-### **🔗 Próximo commit:**
-- **Archivos modificados**: 4 archivos
-- **Funcionalidad**: Filtro avanzado de tipo de egreso
-- **Estado**: ⏳ Listo para commit y push
+### **🔗 Commit completado:**
+- **ID**: `5a82316`
+- **Archivos modificados**: 5 archivos (incluyendo documentación)
+- **Líneas agregadas**: 150 líneas de código
+- **Estado**: ✅ Pusheado a repositorio remoto
 
 ---
 

@@ -444,10 +444,13 @@ export async function getFilteredTransactions(
   if (filters.egressType) {
     if (filters.egressType === 'cash_only') {
       // Solo gastos en efectivo (NO transferencias)
-      conditions.push(and(
+      const egressCondition = and(
         eq(transactions.type, 'expense'),
         eq(transactions.paymentMethod, 'cash')
-      ));
+      );
+      if (egressCondition) {
+        conditions.push(egressCondition);
+      }
     } else if (filters.egressType === 'transfers_only') {
       // Solo transferencias (pagos de tarjetas)
       conditions.push(eq(transactions.type, 'transfer'));
