@@ -93,15 +93,12 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
     .reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
   // EGRESOS = gastos en efectivo + transferencias (pagos de tarjeta)
-  const gastosEfectivo = transactions
-    .filter(t => t.type === 'expense' && t.paymentMethod === 'cash')
+  const totalEgresos = transactions
+    .filter(t => 
+      (t.type === 'expense' && t.paymentMethod === 'cash') || 
+      (t.type === 'transfer')
+    )
     .reduce((sum, t) => sum + parseFloat(t.amount), 0);
-
-  const transferencias = transactions
-    .filter(t => t.type === 'transfer')
-    .reduce((sum, t) => sum + parseFloat(t.amount), 0);
-
-  const totalEgresos = gastosEfectivo + transferencias;
 
   // FLUJO DE EFECTIVO = INGRESOS - EGRESOS
   const cashFlow = totalIncome - totalEgresos;
@@ -206,16 +203,6 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
               <p className="text-2xl font-bold text-orange-600">
                 ${totalEgresos.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
               </p>
-              <div className="mt-2 space-y-1">
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Efectivo:</span>
-                  <span>${gastosEfectivo.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
-                </div>
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Transferencias:</span>
-                  <span>${transferencias.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
