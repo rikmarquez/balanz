@@ -1,6 +1,6 @@
 # BALANZ - Status del Sistema
 
-*Fecha de actualización: 20 de Agosto 2025 - Sesión de Branding*
+*Fecha de actualización: 31 de Agosto 2025 - Mejoras de Métricas Financieras*
 
 ## 📊 Resumen General
 
@@ -100,6 +100,10 @@
 - [x] **Edición de transacciones** - COMPLETADO HOY ✨
 - [x] **Eliminación de transacciones** - COMPLETADO HOY ✨
 - [x] **Botones de acción** en listado (editar/eliminar)
+- [x] **Métricas de Egresos** - Gastos en efectivo + transferencias ✨ NUEVO
+- [x] **Flujo de Efectivo** - Cálculo automático (Ingresos - Egresos) ✨ NUEVO
+- [x] **Dashboard con 5 métricas** - Diseño responsivo optimizado ✨ NUEVO
+- [x] **Recálculo dinámico** - Todas las métricas se actualizan con filtros ✨ NUEVO
 - [ ] **Cálculo automático** de saldos (pendiente)
 - [ ] **Validaciones de negocio** (saldos suficientes)
 
@@ -138,6 +142,7 @@
 - [x] **Filtros por fecha** (desde/hasta) ✨
 - [x] **Filtros por categoría** y tags ✨
 - [x] **Filtros por método** de pago ✨
+- [x] **Filtro "Tipo de Egreso"** - Solo efectivo, solo transferencias, o ambos ✨ NUEVO
 - [x] **Búsqueda de texto** en descripciones ✨
 - [x] **Combinación de filtros** múltiples ✨
 - [x] **Interfaz completa** con panel de filtros ✨
@@ -221,7 +226,7 @@ BALANZ (Next.js Full-Stack)
 | API Backend | 95% | ✅ Completo |
 | Cuentas Efectivo | 100% | ✅ Completo |
 | Categorías | 100% | ✅ Completo |
-| Transacciones | 100% | ✅ Completo |
+| Transacciones | 100% | ✅ Completo ✨ |
 | Tarjetas Crédito | 100% | ✅ Completo ✨ |
 | Tags | 100% | ✅ Completo ✨ |
 | Pagos Tarjetas | 100% | ✅ Completo ✨ |
@@ -498,5 +503,77 @@ El proyecto Balanz está **100% completado** con todas las funcionalidades princ
 
 ---
 
-*Documento actualizado - Sesión de Branding: 20 Agosto 2025*  
-**🎯 ESTADO: PROYECTO COMPLETADO AL 100% 🎯**
+## 📊 MEJORAS DE MÉTRICAS FINANCIERAS (31 Agosto 2025)
+
+### **✅ Nuevas funcionalidades implementadas:**
+
+**🧮 Métricas Avanzadas de Transacciones:**
+- ✅ **Métrica de Egresos** - Cálculo específico de gastos en efectivo + transferencias
+- ✅ **Flujo de Efectivo** - Análisis financiero (Ingresos - Egresos) con colores dinámicos
+- ✅ **Dashboard expandido** - 5 métricas totales en diseño responsivo
+- ✅ **Recálculo automático** - Todas las métricas se actualizan con filtros aplicados
+- ✅ **Indicadores visuales** - Badges y labels para filtros activos
+
+**🎨 Mejoras de Interfaz:**
+- ✅ **Grid responsivo optimizado** - sm:2 lg:3 xl:5 columnas para mejor visualización
+- ✅ **Colores distintivos** - Naranja para Egresos, Morado/Rojo para Flujo de Efectivo
+- ✅ **Consistencia visual** - Mantiene el patrón de diseño existente
+- ✅ **Formato mexicano** - Números con separadores de miles correctos
+
+**💡 Lógica de Negocio:**
+- ✅ **Definición clara de Egresos** - Excluye gastos de tarjeta de crédito
+- ✅ **Incluye transferencias** - Pagos de tarjeta como salida de efectivo real
+- ✅ **Diferenciación Balance vs Flujo** - Balance total vs flujo de efectivo específico
+- ✅ **Filtrado inteligente** - Todas las métricas respetan filtros aplicados
+
+**📈 Métricas del Dashboard actualizado:**
+1. **Total Ingresos** (verde) - Todos los ingresos
+2. **Total Gastos** (rojo) - Todos los gastos (efectivo + tarjeta)
+3. **Balance** (azul/rojo) - Diferencia total entre ingresos y gastos
+4. **Egresos** (naranja) ✨ NUEVO - Solo gastos de efectivo + transferencias
+5. **Flujo de Efectivo** (morado/rojo) ✨ NUEVO - Ingresos menos Egresos reales
+
+### **🔗 Commits realizados:**
+- **Primera sesión** - ID: `033c7f1` - Métricas de Egresos y Flujo de Efectivo
+- **Segunda sesión** - PENDIENTE - Filtros avanzados de tipo de egreso
+
+---
+
+## 🔍 FILTROS AVANZADOS DE EGRESOS (31 Agosto 2025 - Sesión 2)
+
+### **✅ Nueva funcionalidad de filtrado:**
+
+**🎯 Filtro "Tipo de Egreso" implementado:**
+- ✅ **"Todos los egresos"** - Sin filtro específico (comportamiento por defecto)
+- ✅ **"Solo efectivo"** - Filtra únicamente gastos en efectivo (excluye transferencias)
+- ✅ **"Solo transferencias"** - Filtra únicamente pagos de tarjetas (type = 'transfer')
+- ✅ **"Efectivo + Transferencias"** - Combinación explícita de ambos tipos
+
+**🛠️ Implementación técnica completa:**
+- ✅ **Interface FilterValues actualizada** - Nuevo campo `egressType`
+- ✅ **Componente TransactionFilters** - Select desplegable con opciones intuitivas
+- ✅ **Lógica de API backend** - Filtros SQL optimizados para cada tipo
+- ✅ **API route actualizada** - Manejo del parámetro `egressType`
+- ✅ **Frontend integrado** - Paso del filtro en URL y recálculo automático
+
+**💡 Casos de uso empresariales:**
+- **Análisis de efectivo real** - Ver solo gastos que impactan el efectivo
+- **Control de pagos de tarjetas** - Monitorear transferencias específicamente
+- **Flujo de efectivo completo** - Combinar ambos para análisis integral
+- **Reportes personalizados** - Combinable con filtros de fecha, categoría, etc.
+
+**📁 Archivos modificados:**
+- `src/components/transactions/TransactionFilters.tsx`
+- `src/lib/services/transactions.ts`
+- `src/app/api/transactions/route.ts`
+- `src/app/dashboard/transactions/client-page.tsx`
+
+### **🔗 Próximo commit:**
+- **Archivos modificados**: 4 archivos
+- **Funcionalidad**: Filtro avanzado de tipo de egreso
+- **Estado**: ⏳ Listo para commit y push
+
+---
+
+*Documento actualizado - Filtros Avanzados de Egresos: 31 Agosto 2025*  
+**🎯 ESTADO: PROYECTO COMPLETADO AL 100% + MEJORAS CONTINUAS AVANZADAS 🎯**

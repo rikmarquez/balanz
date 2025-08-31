@@ -50,6 +50,9 @@ export async function GET(request: NextRequest) {
       if (searchParams.get('type')) {
         filters.type = searchParams.get('type') as 'income' | 'expense' | 'transfer';
       }
+      if (searchParams.get('egressType')) {
+        filters.egressType = searchParams.get('egressType') as 'all' | 'cash_only' | 'transfers_only';
+      }
       if (searchParams.get('accountId')) {
         filters.accountId = searchParams.get('accountId')!;
       }

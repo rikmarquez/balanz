@@ -18,6 +18,7 @@ export interface FilterValues {
   tagIds?: string[];
   paymentMethod?: 'cash' | 'credit_card' | '';
   type?: 'income' | 'expense' | '';
+  egressType?: 'all' | 'cash_only' | 'transfers_only' | '';
   accountId?: string;
   cardId?: string;
   searchText?: string;
@@ -37,6 +38,7 @@ export function TransactionFilters({ onFiltersChange, isLoading }: TransactionFi
     tagIds: [],
     paymentMethod: '',
     type: '',
+    egressType: '',
     accountId: '',
     cardId: '',
     searchText: ''
@@ -56,6 +58,7 @@ export function TransactionFilters({ onFiltersChange, isLoading }: TransactionFi
     if (filters.tagIds && filters.tagIds.length > 0) cleanFilters.tagIds = filters.tagIds;
     if (filters.paymentMethod) cleanFilters.paymentMethod = filters.paymentMethod as 'cash' | 'credit_card';
     if (filters.type) cleanFilters.type = filters.type as 'income' | 'expense';
+    if (filters.egressType) cleanFilters.egressType = filters.egressType as 'all' | 'cash_only' | 'transfers_only';
     if (filters.accountId) cleanFilters.accountId = filters.accountId;
     if (filters.cardId) cleanFilters.cardId = filters.cardId;
     if (filters.searchText) cleanFilters.searchText = filters.searchText;
@@ -108,6 +111,7 @@ export function TransactionFilters({ onFiltersChange, isLoading }: TransactionFi
       tagIds: [],
       paymentMethod: '',
       type: '',
+      egressType: '',
       accountId: '',
       cardId: '',
       searchText: ''
@@ -276,6 +280,23 @@ export function TransactionFilters({ onFiltersChange, isLoading }: TransactionFi
                 <option value="">Todos</option>
                 <option value="cash">Efectivo</option>
                 <option value="credit_card">Tarjeta de Crédito</option>
+              </select>
+            </div>
+
+            {/* Tipo de Egreso */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tipo de Egreso
+              </label>
+              <select
+                value={filters.egressType || ''}
+                onChange={(e) => updateFilter('egressType', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Todos los egresos</option>
+                <option value="cash_only">Solo efectivo</option>
+                <option value="transfers_only">Solo transferencias</option>
+                <option value="all">Efectivo + Transferencias</option>
               </select>
             </div>
 

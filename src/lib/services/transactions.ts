@@ -402,6 +402,7 @@ export interface TransactionFilters {
   tagIds?: string[];
   paymentMethod?: 'cash' | 'credit_card';
   type?: 'income' | 'expense' | 'transfer';
+  egressType?: 'all' | 'cash_only' | 'transfers_only';
   accountId?: string;
   cardId?: string;
   searchText?: string;
@@ -437,6 +438,26 @@ export async function getFilteredTransactions(
   // Filtro por tipo
   if (filters.type) {
     conditions.push(eq(transactions.type, filters.type));
+  }
+
+  // Filtro por tipo de egreso
+  if (filters.egressType) {
+    if (filters.egressType === 'cash_only') {
+      // Solo gastos en efectivo (NO transferencias)
+      conditions.push(and(
+        eq(transactions.type, 'expense'),
+        eq(transactions.paymentMethod, 'cash')
+      ));
+    } else if (filters.egressType === 'transfers_only') {
+      // Solo transferencias (pagos de tarjetas)
+      conditions.push(eq(transactions.type, 'transfer'));
+    } else if (filters.egressType === 'all') {
+      // Egresos completos: gastos en efectivo + transferencias
+      conditions.push(sql`(
+        (${transactions.type} = 'expense' AND ${transactions.paymentMethod} = 'cash') OR
+        (${transactions.type} = 'transfer')
+      )`);
+    }
   }
 
   // Filtro por cuenta específica

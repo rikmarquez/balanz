@@ -58,6 +58,7 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
       }
       if (filters.paymentMethod) params.append('paymentMethod', filters.paymentMethod);
       if (filters.type) params.append('type', filters.type);
+      if (filters.egressType) params.append('egressType', filters.egressType);
       if (filters.accountId) params.append('accountId', filters.accountId);
       if (filters.cardId) params.append('cardId', filters.cardId);
       if (filters.searchText) params.append('searchText', filters.searchText);
@@ -92,12 +93,15 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
     .reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
   // EGRESOS = gastos en efectivo + transferencias (pagos de tarjeta)
-  const totalEgresos = transactions
-    .filter(t => 
-      (t.type === 'expense' && t.paymentMethod === 'cash') || 
-      (t.type === 'transfer')
-    )
+  const gastosEfectivo = transactions
+    .filter(t => t.type === 'expense' && t.paymentMethod === 'cash')
     .reduce((sum, t) => sum + parseFloat(t.amount), 0);
+
+  const transferencias = transactions
+    .filter(t => t.type === 'transfer')
+    .reduce((sum, t) => sum + parseFloat(t.amount), 0);
+
+  const totalEgresos = gastosEfectivo + transferencias;
 
   // FLUJO DE EFECTIVO = INGRESOS - EGRESOS
   const cashFlow = totalIncome - totalEgresos;
@@ -142,13 +146,8 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
             <div className="ml-4 flex-1">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-600">
-                  Total Ingresos{hasActiveFilters && ' (Filtrados)'}
+                  Total Ingresos
                 </p>
-                {hasActiveFilters && (
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    Filtrado
-                  </span>
-                )}
               </div>
               <p className="text-2xl font-bold text-green-600">
                 ${totalIncome.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
@@ -165,13 +164,8 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
             <div className="ml-4 flex-1">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-600">
-                  Total Gastos{hasActiveFilters && ' (Filtrados)'}
+                  Total Gastos
                 </p>
-                {hasActiveFilters && (
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    Filtrado
-                  </span>
-                )}
               </div>
               <p className="text-2xl font-bold text-red-600">
                 ${totalExpenses.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
@@ -188,13 +182,8 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
             <div className="ml-4 flex-1">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-600">
-                  Balance{hasActiveFilters && ' (Filtrado)'}
+                  Balance
                 </p>
-                {hasActiveFilters && (
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    Filtrado
-                  </span>
-                )}
               </div>
               <p className={`text-2xl font-bold ${balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
                 ${balance.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
@@ -211,17 +200,22 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
             <div className="ml-4 flex-1">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-600">
-                  Egresos{hasActiveFilters && ' (Filtrados)'}
+                  Egresos
                 </p>
-                {hasActiveFilters && (
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    Filtrado
-                  </span>
-                )}
               </div>
               <p className="text-2xl font-bold text-orange-600">
                 ${totalEgresos.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
               </p>
+              <div className="mt-2 space-y-1">
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>Efectivo:</span>
+                  <span>${gastosEfectivo.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+                </div>
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>Transferencias:</span>
+                  <span>${transferencias.toLocaleString('es-MX', { minimumFractionDigits: 2 })}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -234,13 +228,8 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
             <div className="ml-4 flex-1">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-600">
-                  Flujo de Efectivo{hasActiveFilters && ' (Filtrado)'}
+                  Flujo de Efectivo
                 </p>
-                {hasActiveFilters && (
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    Filtrado
-                  </span>
-                )}
               </div>
               <p className={`text-2xl font-bold ${cashFlow >= 0 ? 'text-purple-600' : 'text-red-600'}`}>
                 ${cashFlow.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
