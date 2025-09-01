@@ -31,18 +31,26 @@ export function TransactionFilters({ onFiltersChange, isLoading }: TransactionFi
   const [categories, setCategories] = useState<Category[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   
-  const [filters, setFilters] = useState<FilterValues>({
-    startDate: '',
-    endDate: '',
-    categoryIds: [],
-    tagIds: [],
-    paymentMethod: '',
-    type: '',
-    egressType: '',
-    accountId: '',
-    cardId: '',
-    searchText: ''
-  });
+  // Configurar filtros por defecto para mostrar solo transacciones del mes actual
+  const getDefaultFilters = (): FilterValues => {
+    const today = new Date();
+    const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    
+    return {
+      startDate: formatDateToLocal(monthStart),
+      endDate: getCurrentLocalDate(),
+      categoryIds: [],
+      tagIds: [],
+      paymentMethod: '',
+      type: '',
+      egressType: '',
+      accountId: '',
+      cardId: '',
+      searchText: ''
+    };
+  };
+
+  const [filters, setFilters] = useState<FilterValues>(getDefaultFilters());
 
   useEffect(() => {
     loadData();
@@ -104,25 +112,14 @@ export function TransactionFilters({ onFiltersChange, isLoading }: TransactionFi
   };
 
   const clearAllFilters = () => {
-    setFilters({
-      startDate: '',
-      endDate: '',
-      categoryIds: [],
-      tagIds: [],
-      paymentMethod: '',
-      type: '',
-      egressType: '',
-      accountId: '',
-      cardId: '',
-      searchText: ''
-    });
+    setFilters(getDefaultFilters());
   };
 
   const hasActiveFilters = Object.values(filters).some(value => 
     Array.isArray(value) ? value.length > 0 : Boolean(value)
   );
 
-  const getQuickDateFilter = (type: 'today' | 'week' | 'month' | 'year') => {
+  const getQuickDateFilter = (type: 'today' | 'week' | 'month' | 'prev_month' | 'year') => {
     const today = new Date();
     let startDate = '';
     
@@ -142,6 +139,12 @@ export function TransactionFilters({ onFiltersChange, isLoading }: TransactionFi
         const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
         updateFilter('startDate', formatDateToLocal(monthStart));
         updateFilter('endDate', getCurrentLocalDate());
+        break;
+      case 'prev_month':
+        const prevMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        const prevMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0); // Último día del mes anterior
+        updateFilter('startDate', formatDateToLocal(prevMonthStart));
+        updateFilter('endDate', formatDateToLocal(prevMonthEnd));
         break;
       case 'year':
         const yearStart = new Date(today.getFullYear(), 0, 1);
@@ -240,6 +243,12 @@ export function TransactionFilters({ onFiltersChange, isLoading }: TransactionFi
                     className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
                   >
                     Este mes
+                  </button>
+                  <button
+                    onClick={() => getQuickDateFilter('prev_month')}
+                    className="px-2 py-1 text-xs bg-gray-100 text-gray-800 rounded hover:bg-gray-200"
+                  >
+                    Mes anterior
                   </button>
                   <button
                     onClick={() => getQuickDateFilter('year')}
