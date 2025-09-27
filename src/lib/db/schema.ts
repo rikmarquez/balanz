@@ -98,6 +98,19 @@ export const adjustments = pgTable('adjustments', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+export const accountTransfers = pgTable('account_transfers', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  fromAccountId: uuid('from_account_id').references(() => cashAccounts.id, { onDelete: 'cascade' }).notNull(),
+  toAccountId: uuid('to_account_id').references(() => cashAccounts.id, { onDelete: 'cascade' }).notNull(),
+  amount: decimal('amount', { precision: 12, scale: 2 }).notNull(),
+  transferDate: date('transfer_date').notNull(),
+  description: text('description').notNull(),
+  transferType: varchar('transfer_type', { length: 30 }).notNull(), // 'atm_withdrawal' | 'internal_transfer' | 'cash_deposit'
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 export const balanceAdjustments = pgTable('balance_adjustments', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
@@ -118,6 +131,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   tags: many(tags),
   transactions: many(transactions),
   cardPayments: many(cardPayments),
+  accountTransfers: many(accountTransfers),
   adjustments: many(adjustments),
   balanceAdjustments: many(balanceAdjustments),
 }));
@@ -129,6 +143,12 @@ export const cashAccountsRelations = relations(cashAccounts, ({ one, many }) => 
   }),
   transactions: many(transactions),
   cardPayments: many(cardPayments),
+  fromAccountTransfers: many(accountTransfers, {
+    relationName: 'fromAccount',
+  }),
+  toAccountTransfers: many(accountTransfers, {
+    relationName: 'toAccount',
+  }),
   adjustments: many(adjustments),
   balanceAdjustments: many(balanceAdjustments),
 }));
@@ -203,6 +223,23 @@ export const cardPaymentsRelations = relations(cardPayments, ({ one }) => ({
   sourceAccount: one(cashAccounts, {
     fields: [cardPayments.sourceAccountId],
     references: [cashAccounts.id],
+  }),
+}));
+
+export const accountTransfersRelations = relations(accountTransfers, ({ one }) => ({
+  user: one(users, {
+    fields: [accountTransfers.userId],
+    references: [users.id],
+  }),
+  fromAccount: one(cashAccounts, {
+    fields: [accountTransfers.fromAccountId],
+    references: [cashAccounts.id],
+    relationName: 'fromAccount',
+  }),
+  toAccount: one(cashAccounts, {
+    fields: [accountTransfers.toAccountId],
+    references: [cashAccounts.id],
+    relationName: 'toAccount',
   }),
 }));
 

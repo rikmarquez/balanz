@@ -5,17 +5,18 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useMobileMenu } from './MobileMenuProvider';
 import Image from 'next/image';
-import { 
-  LayoutDashboard, 
-  Wallet, 
-  CreditCard, 
-  TrendingUp, 
-  TrendingDown, 
-  BarChart3, 
+import {
+  LayoutDashboard,
+  Wallet,
+  CreditCard,
+  TrendingUp,
+  TrendingDown,
+  BarChart3,
   Settings,
   Tags,
   Hash,
-  X
+  X,
+  ArrowLeftRight
 } from 'lucide-react';
 
 const navigation = [
@@ -23,6 +24,7 @@ const navigation = [
   { name: 'Cuentas', href: '/dashboard/accounts', icon: Wallet },
   { name: 'Tarjetas', href: '/dashboard/credit-cards', icon: CreditCard },
   { name: 'Transacciones', href: '/dashboard/transactions', icon: TrendingUp },
+  { name: 'Transferencias', href: '/dashboard/transfers', icon: ArrowLeftRight },
   { name: 'Categorías', href: '/dashboard/categories', icon: Tags },
   { name: 'Tags', href: '/dashboard/tags', icon: Hash },
   { name: 'Reportes', href: '/dashboard/reports', icon: BarChart3 },
