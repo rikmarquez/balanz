@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Plus, ArrowLeftRight, Pencil, Trash2 } from 'lucide-react';
 import { transfersService, AccountTransfer, transferTypeLabels } from '@/lib/services/transfers';
 import { TransferForm } from '@/components/transfers/TransferForm';
@@ -19,11 +19,11 @@ export function TransfersClientPage() {
     setLoading(true);
     const response = await transfersService.getAll();
 
-    if (response.success) {
+    if (response.success && response.data) {
       setTransfers(response.data);
       setError(null);
     } else {
-      setError(response.error);
+      setError(response.error || 'Error al cargar transferencias');
     }
     setLoading(false);
   };

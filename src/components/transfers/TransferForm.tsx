@@ -1,10 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { ArrowLeft, ArrowLeftRight } from 'lucide-react';
 import { transfersService, AccountTransfer, CreateTransferData, transferTypeLabels } from '@/lib/services/transfers';
-import { cashAccountsService, CashAccount } from '@/lib/services/cash-accounts';
+
+interface CashAccount {
+  id: string;
+  name: string;
+  currentBalance: string;
+  isActive: boolean;
+}
 
 interface TransferFormProps {
   transfer?: AccountTransfer | null;
@@ -14,13 +20,20 @@ interface TransferFormProps {
 
 export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProps) {
   const [accounts, setAccounts] = useState<CashAccount[]>([]);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    fromAccountId: string;
+    toAccountId: string;
+    amount: string;
+    transferDate: string;
+    description: string;
+    transferType: 'atm_withdrawal' | 'internal_transfer' | 'cash_deposit';
+  }>({
     fromAccountId: '',
     toAccountId: '',
     amount: '',
     transferDate: new Date().toISOString().split('T')[0],
     description: '',
-    transferType: 'internal_transfer' as const,
+    transferType: 'internal_transfer',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
@@ -47,13 +60,17 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
 
   const loadAccounts = async () => {
     setLoadingAccounts(true);
-    const response = await cashAccountsService.getAll();
-
-    if (response.success) {
-      // Solo mostrar cuentas activas
-      setAccounts(response.data.filter(account => account.isActive));
-    } else {
-      console.error('Error loading accounts:', response.error);
+    try {
+      const response = await fetch('/api/accounts');
+      if (response.ok) {
+        const data = await response.json();
+        // Solo mostrar cuentas activas
+        setAccounts(data.filter((account: CashAccount) => account.isActive));
+      } else {
+        console.error('Error loading accounts');
+      }
+    } catch (error) {
+      console.error('Error loading accounts:', error);
     }
     setLoadingAccounts(false);
   };
@@ -112,7 +129,7 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
     if (response.success) {
       onSuccess();
     } else {
-      setErrors({ submit: response.error });
+      setErrors({ submit: response.error || 'Error al procesar la transferencia' });
     }
 
     setLoading(false);

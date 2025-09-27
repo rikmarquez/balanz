@@ -1,4 +1,4 @@
-import { ApiResponse } from '@/lib/api-client';
+import { ApiResponse } from '@/lib/api/response';
 
 export interface AccountTransfer {
   id: string;

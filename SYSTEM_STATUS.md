@@ -576,5 +576,62 @@ El proyecto Balanz está **100% completado** con todas las funcionalidades princ
 
 ---
 
-*Documento actualizado - Filtros Avanzados de Egresos: 31 Agosto 2025*  
-**🎯 ESTADO: PROYECTO COMPLETADO AL 100% + MEJORAS CONTINUAS AVANZADAS 🎯**
+## 💸 MÓDULO DE TRANSFERENCIAS INTERNAS (27 Septiembre 2025)
+
+### **✅ Nueva funcionalidad implementada:**
+
+**🔄 Sistema completo de Transferencias Internas:**
+- ✅ **Nueva tabla `account_transfers`** - Estructura completa con relaciones bidireccionales
+- ✅ **API endpoints completos** - `/api/transfers` y `/api/transfers/[id]` con CRUD completo
+- ✅ **Módulo en sidebar** - "Transferencias" con ícono ArrowLeftRight entre Transacciones y Categorías
+- ✅ **Formulario avanzado** - Crear/editar transferencias con validaciones en tiempo real
+- ✅ **Tres tipos de transferencia:**
+  - `atm_withdrawal` - Retiro de cajero automático
+  - `internal_transfer` - Transferencia entre cuentas propias
+  - `cash_deposit` - Depósito en efectivo
+- ✅ **Validaciones robustas** - Saldo suficiente, cuentas válidas, transacciones atómicas
+- ✅ **Actualización automática de saldos** - Origen y destino se actualizan instantáneamente
+- ✅ **Interfaz responsive** - Listado, creación, edición y eliminación optimizados
+
+**🎯 Problema resuelto:**
+- **Retiros de cajero automático** - Ya no son ingresos ni egresos, son transferencias internas
+- **Transferencias entre cuentas propias** - Balance global se mantiene igual (suma cero)
+- **Organización de fondos** - Mover dinero entre cuenta principal y cuentas específicas
+- **Depósitos de efectivo** - Registrar cuando depositas efectivo en el banco
+
+**🛠️ Implementación técnica:**
+- **Base de datos:** Nueva tabla con relaciones a `cashAccounts` y `users`
+- **Backend:** Endpoints con validaciones de negocio y transacciones atómicas
+- **Frontend:** Servicio TypeScript, formularios reactivos, listado con acciones
+- **UX:** Selección inteligente de cuentas, validación de saldos, mensajes claros
+
+**📁 Archivos creados/modificados:**
+- `src/lib/db/schema.ts` - Nueva tabla `accountTransfers` con relaciones
+- `src/app/api/transfers/route.ts` - API principal (GET, POST)
+- `src/app/api/transfers/[id]/route.ts` - API individual (GET, PUT, DELETE)
+- `src/app/dashboard/transfers/` - Páginas del módulo
+- `src/components/transfers/TransferForm.tsx` - Formulario completo
+- `src/lib/services/transfers.ts` - Servicio del frontend
+- `src/components/dashboard/Sidebar.tsx` - Nuevo módulo en navegación
+
+### **🔗 Commit completado:**
+- **ID**: `c0a2b18`
+- **Mensaje**: "feat: Implementar módulo completo de Transferencias Internas"
+- **Archivos**: 8 archivos modificados, 1232 líneas agregadas
+- **Estado**: ✅ Pusheado a repositorio remoto
+
+### **📊 Casos de uso cubiertos:**
+1. **Retiro de cajero:** Cuenta Bancaria → Efectivo en mano
+2. **Transferencia online:** Cuenta Principal → Cuenta Compras Online
+3. **Depósito efectivo:** Efectivo en mano → Cuenta Bancaria
+4. **Organización fondos:** Ahorros → Gastos mensuales
+5. **Preparación pagos:** Cuenta Principal → Cuenta específica para compras
+
+**🎉 FUNCIONALIDAD 100% OPERATIVA**
+
+El módulo está completamente integrado en Balanz y listo para uso en producción. Los usuarios pueden ahora registrar correctamente sus movimientos internos sin afectar el balance global de sus finanzas.
+
+---
+
+*Documento actualizado - Módulo de Transferencias Internas: 27 Septiembre 2025*
+**🎯 ESTADO: PROYECTO COMPLETADO AL 100% + TRANSFERENCIAS INTERNAS IMPLEMENTADAS 🎯**
