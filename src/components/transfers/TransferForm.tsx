@@ -64,13 +64,21 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
       const response = await fetch('/api/accounts');
       if (response.ok) {
         const data = await response.json();
+        console.log('Accounts API response:', data);
+        // La respuesta puede venir en data.data o directamente en data
+        const accountsArray = data.data || data;
+        console.log('Accounts array:', accountsArray);
         // Solo mostrar cuentas activas
-        setAccounts(data.filter((account: CashAccount) => account.isActive));
+        const activeAccounts = accountsArray.filter((account: CashAccount) => account.isActive);
+        console.log('Active accounts:', activeAccounts);
+        setAccounts(activeAccounts);
       } else {
-        console.error('Error loading accounts');
+        console.error('Error loading accounts - Response not OK:', response.status);
+        setErrors({ ...errors, accounts: 'Error al cargar las cuentas' });
       }
     } catch (error) {
       console.error('Error loading accounts:', error);
+      setErrors({ ...errors, accounts: 'Error de conexión al cargar las cuentas' });
     }
     setLoadingAccounts(false);
   };
@@ -194,6 +202,12 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
             </div>
           )}
 
+          {errors.accounts && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+              {errors.accounts}
+            </div>
+          )}
+
           {/* Tipo de transferencia */}
           <div>
             <label htmlFor="transferType" className="block text-sm font-medium text-gray-700 mb-2">
@@ -211,7 +225,7 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
                   ? 'Depósito en efectivo'
                   : ''
               })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               {Object.entries(transferTypeLabels).map(([value, label]) => (
                 <option key={value} value={value}>
@@ -231,11 +245,14 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
                 id="fromAccountId"
                 value={formData.fromAccountId}
                 onChange={(e) => setFormData({ ...formData, fromAccountId: e.target.value })}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  errors.fromAccountId ? 'border-red-300' : ''
+                className={`w-full px-3 py-2 border rounded-md shadow-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.fromAccountId ? 'border-red-300' : 'border-gray-300'
                 }`}
               >
                 <option value="">Seleccionar cuenta</option>
+                {accounts.length === 0 && !loadingAccounts && (
+                  <option value="" disabled>No hay cuentas disponibles</option>
+                )}
                 {accounts.map((account) => (
                   <option key={account.id} value={account.id}>
                     {account.name} - {formatCurrency(parseFloat(account.currentBalance))}
@@ -261,11 +278,14 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
                 id="toAccountId"
                 value={formData.toAccountId}
                 onChange={(e) => setFormData({ ...formData, toAccountId: e.target.value })}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  errors.toAccountId ? 'border-red-300' : ''
+                className={`w-full px-3 py-2 border rounded-md shadow-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.toAccountId ? 'border-red-300' : 'border-gray-300'
                 }`}
               >
                 <option value="">Seleccionar cuenta</option>
+                {accounts.length === 0 && !loadingAccounts && (
+                  <option value="" disabled>No hay cuentas disponibles</option>
+                )}
                 {accounts
                   .filter(account => account.id !== formData.fromAccountId)
                   .map((account) => (
@@ -293,8 +313,8 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
                 min="0.01"
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  errors.amount ? 'border-red-300' : ''
+                className={`w-full px-3 py-2 border rounded-md shadow-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.amount ? 'border-red-300' : 'border-gray-300'
                 }`}
                 placeholder="0.00"
               />
@@ -318,8 +338,8 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
                 id="transferDate"
                 value={formData.transferDate}
                 onChange={(e) => setFormData({ ...formData, transferDate: e.target.value })}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  errors.transferDate ? 'border-red-300' : ''
+                className={`w-full px-3 py-2 border rounded-md shadow-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.transferDate ? 'border-red-300' : 'border-gray-300'
                 }`}
               />
               {errors.transferDate && (
@@ -338,8 +358,8 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
               id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                errors.description ? 'border-red-300' : ''
+              className={`w-full px-3 py-2 border rounded-md shadow-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                errors.description ? 'border-red-300' : 'border-gray-300'
               }`}
               placeholder="Ej: Retiro de cajero automático, Transferencia para gastos, etc."
             />
