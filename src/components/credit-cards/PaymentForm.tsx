@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { CreditCard as CreditCardIcon, DollarSign, ArrowRight } from 'lucide-react';
 import { CreditCard, CashAccount } from '@/types';
 import { formatCurrency } from '@/lib/utils';
+import { getCurrentLocalDate } from '@/utils/dateUtils';
 
 interface PaymentFormProps {
   creditCard: CreditCard;
@@ -16,6 +17,7 @@ export function PaymentForm({ creditCard, onPaymentSuccess, onCancel }: PaymentF
   const [accounts, setAccounts] = useState<CashAccount[]>([]);
   const [selectedAccountId, setSelectedAccountId] = useState('');
   const [amount, setAmount] = useState('');
+  const [date, setDate] = useState(getCurrentLocalDate()); // formato YYYY-MM-DD usando zona horaria local
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -80,7 +82,8 @@ export function PaymentForm({ creditCard, onPaymentSuccess, onCancel }: PaymentF
         body: JSON.stringify({
           amount: paymentAmount,
           accountId: selectedAccountId,
-          description: creditCard.name
+          description: creditCard.name,
+          date: date
         }),
       });
 
@@ -174,6 +177,22 @@ export function PaymentForm({ creditCard, onPaymentSuccess, onCancel }: PaymentF
               Saldo disponible: <span className="font-medium">{formatCurrency(accountBalance)}</span>
             </p>
           )}
+        </div>
+
+        {/* Date Input */}
+        <div>
+          <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
+            Fecha del Pago *
+          </label>
+          <input
+            type="date"
+            id="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            max={getCurrentLocalDate()}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            required
+          />
         </div>
 
         {/* Amount Input */}

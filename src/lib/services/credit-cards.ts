@@ -112,6 +112,7 @@ interface PaymentData {
   amount: number;
   accountId: string;
   description?: string;
+  date?: string;
 }
 
 interface PaymentResult {
@@ -173,7 +174,7 @@ export async function processCreditCardPayment(
       description: paymentData.description || `Pago de tarjeta ${card.name}`,
       accountId: paymentData.accountId,
       categoryId: paymentCategoryId,
-      date: new Date().toLocaleDateString('en-CA'), // formato YYYY-MM-DD en zona horaria local
+      date: paymentData.date || new Date().toLocaleDateString('en-CA'), // formato YYYY-MM-DD en zona horaria local
       tagIds: []
     }, userId);
 

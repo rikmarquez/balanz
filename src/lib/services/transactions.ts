@@ -3,6 +3,7 @@ import { transactions, categories, cashAccounts, creditCards } from '../db/schem
 import { eq, and, desc, gte, lte, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { getTagsByTransactionId, updateTransactionTags } from './tags';
+import { formatDateToLocal } from '@/utils/dateUtils';
 
 export const CreateTransactionSchema = z.object({
   amount: z.string().regex(/^\d+(\.\d{1,2})?$/, 'El monto debe ser un número válido'),
@@ -230,9 +231,9 @@ export async function getCurrentMonthStats(userId: string) {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  
-  const startDate = startOfMonth.toISOString().split('T')[0];
-  const endDate = endOfMonth.toISOString().split('T')[0];
+
+  const startDate = formatDateToLocal(startOfMonth);
+  const endDate = formatDateToLocal(endOfMonth);
 
   const result = await db
     .select({

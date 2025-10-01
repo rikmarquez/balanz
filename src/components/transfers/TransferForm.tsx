@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import { ArrowLeft, ArrowLeftRight } from 'lucide-react';
 import { transfersService, AccountTransfer, CreateTransferData, transferTypeLabels } from '@/lib/services/transfers';
+import { getCurrentLocalDate } from '@/utils/dateUtils';
 
 interface CashAccount {
   id: string;
@@ -31,7 +32,7 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
     fromAccountId: '',
     toAccountId: '',
     amount: '',
-    transferDate: new Date().toISOString().split('T')[0],
+    transferDate: getCurrentLocalDate(),
     description: '',
     transferType: 'internal_transfer',
   });

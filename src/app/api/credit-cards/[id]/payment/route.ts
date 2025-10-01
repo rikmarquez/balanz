@@ -12,7 +12,8 @@ import { z } from 'zod';
 const PaymentSchema = z.object({
   amount: z.number().positive('El monto debe ser positivo'),
   accountId: z.string().min(1, 'La cuenta es requerida'),
-  description: z.string().optional()
+  description: z.string().optional(),
+  date: z.string().optional()
 });
 
 interface RouteContext {

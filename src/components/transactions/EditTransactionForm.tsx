@@ -63,14 +63,23 @@ export function EditTransactionForm({
     setIsLoading(true);
     setErrors({});
 
-    // Prepare data based on payment method
-    const submitData = {
+    // Prepare data based on transaction type
+    const submitData: any = {
       ...formData,
-      accountId: formData.paymentMethod === 'cash' ? formData.accountId : undefined,
-      cardId: formData.paymentMethod === 'credit_card' ? formData.cardId : undefined,
       notes: formData.notes || undefined,
-      tagIds: selectedTagIds,
     };
+
+    // For transfers, keep the original data structure
+    if (formData.type === 'transfer') {
+      // Only allow editing date, amount, description, and notes for transfers
+      submitData.accountId = formData.accountId;
+      submitData.categoryId = formData.categoryId;
+    } else {
+      // For income/expense, set account/card based on payment method
+      submitData.accountId = formData.paymentMethod === 'cash' ? formData.accountId : undefined;
+      submitData.cardId = formData.paymentMethod === 'credit_card' ? formData.cardId : undefined;
+      submitData.tagIds = selectedTagIds;
+    }
 
     try {
       const response = await fetch(`/api/transactions/${transaction.id}`, {
@@ -156,36 +165,47 @@ export function EditTransactionForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Type Selection */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">
-          Tipo de transacción *
-        </label>
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => handleTypeChange('income')}
-            className={`p-3 border rounded-lg text-sm font-medium transition-colors ${
-              formData.type === 'income'
-                ? 'border-green-500 bg-green-50 text-green-700'
-                : 'border-gray-300 hover:border-green-300'
-            }`}
-          >
-            Ingreso
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTypeChange('expense')}
-            className={`p-3 border rounded-lg text-sm font-medium transition-colors ${
-              formData.type === 'expense'
-                ? 'border-red-500 bg-red-50 text-red-700'
-                : 'border-gray-300 hover:border-red-300'
-            }`}
-          >
-            Gasto
-          </button>
+      {/* Type Selection - Only show for income/expense, not transfer */}
+      {formData.type !== 'transfer' && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            Tipo de transacción *
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => handleTypeChange('income')}
+              className={`p-3 border rounded-lg text-sm font-medium transition-colors ${
+                formData.type === 'income'
+                  ? 'border-green-500 bg-green-50 text-green-700'
+                  : 'border-gray-300 hover:border-green-300'
+              }`}
+            >
+              Ingreso
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTypeChange('expense')}
+              className={`p-3 border rounded-lg text-sm font-medium transition-colors ${
+                formData.type === 'expense'
+                  ? 'border-red-500 bg-red-50 text-red-700'
+                  : 'border-gray-300 hover:border-red-300'
+              }`}
+            >
+              Gasto
+            </button>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Transfer Type Notice */}
+      {formData.type === 'transfer' && (
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-800">
+            <strong>Pago de Tarjeta de Crédito</strong> - Puedes editar la fecha, monto y descripción de este pago.
+          </p>
+        </div>
+      )}
 
       <div className="grid gap-6 md:grid-cols-2">
         <div>
@@ -256,67 +276,72 @@ export function EditTransactionForm({
         )}
       </div>
 
-      <div>
-        <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700 mb-2">
-          Categoría *
-        </label>
-        <select
-          id="categoryId"
-          name="categoryId"
-          required
-          value={formData.categoryId}
-          onChange={handleChange}
-          className={`w-full px-3 py-2 border rounded-md shadow-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-            errors.categoryId ? 'border-red-300' : 'border-gray-300'
-          }`}
-        >
-          <option value="">Selecciona una categoría</option>
-          {filteredCategories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-        {errors.categoryId && (
-          <p className="mt-1 text-sm text-red-600">{errors.categoryId}</p>
-        )}
-      </div>
-
-      {/* Payment Method Selection */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">
-          Método de pago *
-        </label>
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => handleChange({ target: { name: 'paymentMethod', value: 'cash' } } as any)}
-            className={`p-3 border rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2 ${
-              formData.paymentMethod === 'cash'
-                ? 'border-blue-500 bg-blue-50 text-blue-700'
-                : 'border-gray-300 hover:border-blue-300'
+      {/* Category Selection - Not shown for transfers */}
+      {formData.type !== 'transfer' && (
+        <div>
+          <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700 mb-2">
+            Categoría *
+          </label>
+          <select
+            id="categoryId"
+            name="categoryId"
+            required
+            value={formData.categoryId}
+            onChange={handleChange}
+            className={`w-full px-3 py-2 border rounded-md shadow-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              errors.categoryId ? 'border-red-300' : 'border-gray-300'
             }`}
           >
-            <Wallet className="h-4 w-4" />
-            <span>Efectivo</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleChange({ target: { name: 'paymentMethod', value: 'credit_card' } } as any)}
-            className={`p-3 border rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2 ${
-              formData.paymentMethod === 'credit_card'
-                ? 'border-blue-500 bg-blue-50 text-blue-700'
-                : 'border-gray-300 hover:border-blue-300'
-            }`}
-          >
-            <CreditCard className="h-4 w-4" />
-            <span>Tarjeta</span>
-          </button>
+            <option value="">Selecciona una categoría</option>
+            {filteredCategories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+          {errors.categoryId && (
+            <p className="mt-1 text-sm text-red-600">{errors.categoryId}</p>
+          )}
         </div>
-      </div>
+      )}
 
-      {/* Account/Card Selection */}
-      {formData.paymentMethod === 'cash' ? (
+      {/* Payment Method Selection - Not shown for transfers */}
+      {formData.type !== 'transfer' && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            Método de pago *
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => handleChange({ target: { name: 'paymentMethod', value: 'cash' } } as any)}
+              className={`p-3 border rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2 ${
+                formData.paymentMethod === 'cash'
+                  ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  : 'border-gray-300 hover:border-blue-300'
+              }`}
+            >
+              <Wallet className="h-4 w-4" />
+              <span>Efectivo</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleChange({ target: { name: 'paymentMethod', value: 'credit_card' } } as any)}
+              className={`p-3 border rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2 ${
+                formData.paymentMethod === 'credit_card'
+                  ? 'border-blue-500 bg-blue-50 text-blue-700'
+                  : 'border-gray-300 hover:border-blue-300'
+              }`}
+            >
+              <CreditCard className="h-4 w-4" />
+              <span>Tarjeta</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Account/Card Selection - Not shown for transfers */}
+      {formData.type !== 'transfer' && formData.paymentMethod === 'cash' && (
         <div>
           <label htmlFor="accountId" className="block text-sm font-medium text-gray-700 mb-2">
             Cuenta de efectivo *
@@ -341,7 +366,9 @@ export function EditTransactionForm({
             <p className="mt-1 text-sm text-red-600">{errors.accountId}</p>
           )}
         </div>
-      ) : (
+      )}
+
+      {formData.type !== 'transfer' && formData.paymentMethod === 'credit_card' && (
         <div>
           <label htmlFor="cardId" className="block text-sm font-medium text-gray-700 mb-2">
             Tarjeta de crédito *
@@ -368,10 +395,13 @@ export function EditTransactionForm({
         </div>
       )}
 
-      <TagSelector
-        selectedTagIds={selectedTagIds}
-        onChange={setSelectedTagIds}
-      />
+      {/* Tags - Not shown for transfers */}
+      {formData.type !== 'transfer' && (
+        <TagSelector
+          selectedTagIds={selectedTagIds}
+          onChange={setSelectedTagIds}
+        />
+      )}
 
       <div>
         <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
