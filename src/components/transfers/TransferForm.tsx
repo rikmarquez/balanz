@@ -177,25 +177,29 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
         <Button
           variant="outline"
           onClick={onCancel}
-          className="mb-4"
+          className="mb-4 w-full sm:w-auto"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Volver
         </Button>
 
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-          <ArrowLeftRight className="mr-2 h-6 w-6 text-blue-600" />
-          {isEditing ? 'Editar Transferencia' : 'Nueva Transferencia'}
-        </h1>
-        <p className="mt-1 text-sm text-gray-500">
-          {isEditing
-            ? 'Modifica los datos de la transferencia'
-            : 'Transfiere dinero entre tus cuentas'
-          }
-        </p>
+        <div className="flex items-start space-x-2">
+          <ArrowLeftRight className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 break-words">
+              {isEditing ? 'Editar Transferencia' : 'Nueva Transferencia'}
+            </h1>
+            <p className="mt-1 text-sm text-gray-500">
+              {isEditing
+                ? 'Modifica los datos de la transferencia'
+                : 'Transfiere dinero entre tus cuentas'
+              }
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-6">
+      <div className="bg-white shadow-sm rounded-lg border border-gray-200 p-4 sm:p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {errors.submit && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
@@ -255,7 +259,7 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
                   <option value="" disabled>No hay cuentas disponibles</option>
                 )}
                 {accounts.map((account) => (
-                  <option key={account.id} value={account.id}>
+                  <option key={account.id} value={account.id} className="truncate">
                     {account.name} - {formatCurrency(parseFloat(account.currentBalance))}
                   </option>
                 ))}
@@ -290,7 +294,7 @@ export function TransferForm({ transfer, onSuccess, onCancel }: TransferFormProp
                 {accounts
                   .filter(account => account.id !== formData.fromAccountId)
                   .map((account) => (
-                    <option key={account.id} value={account.id}>
+                    <option key={account.id} value={account.id} className="truncate">
                       {account.name} - {formatCurrency(parseFloat(account.currentBalance))}
                     </option>
                   ))}

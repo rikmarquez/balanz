@@ -130,7 +130,7 @@ export const transfersService = {
 };
 
 export const transferTypeLabels = {
-  atm_withdrawal: 'Retiro de cajero automático',
-  internal_transfer: 'Transferencia entre cuentas',
+  atm_withdrawal: 'Retiro de cajero',
+  internal_transfer: 'Transf. entre cuentas',
   cash_deposit: 'Depósito en efectivo',
 } as const;

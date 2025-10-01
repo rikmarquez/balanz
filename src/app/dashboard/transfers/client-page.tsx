@@ -65,7 +65,10 @@ export function TransfersClientPage() {
   };
 
   const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'dd/MM/yyyy', { locale: es });
+    // Parsear la fecha en zona horaria local para evitar problemas de UTC
+    const [year, month, day] = dateString.split('-').map(Number);
+    const localDate = new Date(year, month - 1, day);
+    return format(localDate, 'dd/MM/yyyy', { locale: es });
   };
 
   if (loading) {
@@ -150,39 +153,39 @@ export function TransfersClientPage() {
           <ul className="divide-y divide-gray-200">
             {transfers.map((transfer) => (
               <li key={transfer.id} className="px-4 py-4 sm:px-6">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-3">
                       <div className="flex-shrink-0">
                         <ArrowLeftRight className="h-5 w-5 text-blue-500" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2">
                           <p className="text-sm font-medium text-gray-900 truncate">
                             {transfer.fromAccount?.name} → {transfer.toAccount?.name}
                           </p>
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 w-fit mt-1 sm:mt-0">
                             {transferTypeLabels[transfer.transferType]}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-500 truncate">
+                        <p className="text-sm text-gray-500 truncate mt-1">
                           {transfer.description}
                         </p>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xs text-gray-400 mt-1">
                           {formatDate(transfer.transferDate)}
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-4">
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-gray-900">
+                  <div className="flex items-center justify-between sm:justify-end space-x-3 sm:space-x-4 pl-8 sm:pl-0">
+                    <div className="text-left sm:text-right">
+                      <p className="text-sm font-medium text-gray-900 whitespace-nowrap">
                         {formatCurrency(transfer.amount)}
                       </p>
                     </div>
 
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 flex-shrink-0">
                       <Button
                         variant="outline"
                         size="sm"
