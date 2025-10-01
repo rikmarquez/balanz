@@ -24,7 +24,8 @@
       "Bash(move favicon.ico public )",
       "Bash(move balanz-logo.jpg public)",
       "Bash(mv:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": [],

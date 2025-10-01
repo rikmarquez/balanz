@@ -41,12 +41,19 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
   const [transactions, setTransactions] = useState<Transaction[]>(initialTransactions);
   const [loading, setLoading] = useState(false);
   const [activeFilters, setActiveFilters] = useState<FilterValues>({});
+  const [stats, setStats] = useState({
+    totalIncome: 0,
+    totalExpenses: 0,
+    balance: 0,
+    totalEgresos: 0,
+    cashFlow: 0,
+  });
 
   const loadTransactions = useCallback(async (filters: FilterValues = {}) => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      
+
       // Agregar parámetros de filtros a la URL
       if (filters.startDate) params.append('startDate', filters.startDate);
       if (filters.endDate) params.append('endDate', filters.endDate);
@@ -62,14 +69,30 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
       if (filters.accountId) params.append('accountId', filters.accountId);
       if (filters.cardId) params.append('cardId', filters.cardId);
       if (filters.searchText) params.append('searchText', filters.searchText);
-      
-      // Siempre limitar a 100 transacciones para performance
+
+      // Siempre limitar a 100 transacciones para performance del listado
       params.append('limit', '100');
-      
-      const response = await fetch(`/api/transactions?${params.toString()}`);
-      if (response.ok) {
-        const data = await response.json();
+
+      // Cargar transacciones y estadísticas en paralelo
+      const [transactionsResponse, statsResponse] = await Promise.all([
+        fetch(`/api/transactions?${params.toString()}`),
+        fetch(`/api/transactions/stats?${params.toString()}`)
+      ]);
+
+      if (transactionsResponse.ok) {
+        const data = await transactionsResponse.json();
         setTransactions(data.data || []);
+      }
+
+      if (statsResponse.ok) {
+        const statsData = await statsResponse.json();
+        setStats(statsData.data || {
+          totalIncome: 0,
+          totalExpenses: 0,
+          balance: 0,
+          totalEgresos: 0,
+          cashFlow: 0,
+        });
       }
     } catch (error) {
       console.error('Error loading transactions:', error);
@@ -82,28 +105,6 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
     setActiveFilters(filters);
     loadTransactions(filters);
   }, [loadTransactions]);
-
-  // Calcular estadísticas basadas en las transacciones filtradas
-  const totalIncome = transactions
-    .filter(t => t.type === 'income')
-    .reduce((sum, t) => sum + parseFloat(t.amount), 0);
-
-  const totalExpenses = transactions
-    .filter(t => t.type === 'expense')
-    .reduce((sum, t) => sum + parseFloat(t.amount), 0);
-
-  // EGRESOS = gastos en efectivo + transferencias (pagos de tarjeta)
-  const totalEgresos = transactions
-    .filter(t => 
-      (t.type === 'expense' && t.paymentMethod === 'cash') || 
-      (t.type === 'transfer')
-    )
-    .reduce((sum, t) => sum + parseFloat(t.amount), 0);
-
-  // FLUJO DE EFECTIVO = INGRESOS - EGRESOS
-  const cashFlow = totalIncome - totalEgresos;
-
-  const balance = totalIncome - totalExpenses;
 
   // Determinar si hay filtros activos para mostrar indicadores
   const hasActiveFilters = Object.keys(activeFilters).length > 0;
@@ -147,7 +148,7 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
                 </p>
               </div>
               <p className="text-2xl font-bold text-green-600">
-                ${totalIncome.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                ${stats.totalIncome.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
               </p>
             </div>
           </div>
@@ -165,7 +166,7 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
                 </p>
               </div>
               <p className="text-2xl font-bold text-red-600">
-                ${totalExpenses.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                ${stats.totalExpenses.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
               </p>
             </div>
           </div>
@@ -173,8 +174,8 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className={`p-2 rounded-lg ${balance >= 0 ? 'bg-blue-100' : 'bg-red-100'}`}>
-              <Plus className={`h-6 w-6 ${balance >= 0 ? 'text-blue-600' : 'text-red-600'}`} />
+            <div className={`p-2 rounded-lg ${stats.balance >= 0 ? 'bg-blue-100' : 'bg-red-100'}`}>
+              <Plus className={`h-6 w-6 ${stats.balance >= 0 ? 'text-blue-600' : 'text-red-600'}`} />
             </div>
             <div className="ml-4 flex-1">
               <div className="flex items-center justify-between">
@@ -182,8 +183,8 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
                   Balance
                 </p>
               </div>
-              <p className={`text-2xl font-bold ${balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-                ${balance.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+              <p className={`text-2xl font-bold ${stats.balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+                ${stats.balance.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
               </p>
             </div>
           </div>
@@ -201,7 +202,7 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
                 </p>
               </div>
               <p className="text-2xl font-bold text-orange-600">
-                ${totalEgresos.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                ${stats.totalEgresos.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
               </p>
             </div>
           </div>
@@ -209,8 +210,8 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className={`p-2 rounded-lg ${cashFlow >= 0 ? 'bg-purple-100' : 'bg-red-100'}`}>
-              <Plus className={`h-6 w-6 ${cashFlow >= 0 ? 'text-purple-600' : 'text-red-600'}`} />
+            <div className={`p-2 rounded-lg ${stats.cashFlow >= 0 ? 'bg-purple-100' : 'bg-red-100'}`}>
+              <Plus className={`h-6 w-6 ${stats.cashFlow >= 0 ? 'text-purple-600' : 'text-red-600'}`} />
             </div>
             <div className="ml-4 flex-1">
               <div className="flex items-center justify-between">
@@ -218,8 +219,8 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
                   Flujo de Efectivo
                 </p>
               </div>
-              <p className={`text-2xl font-bold ${cashFlow >= 0 ? 'text-purple-600' : 'text-red-600'}`}>
-                ${cashFlow.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+              <p className={`text-2xl font-bold ${stats.cashFlow >= 0 ? 'text-purple-600' : 'text-red-600'}`}>
+                ${stats.cashFlow.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
               </p>
             </div>
           </div>
