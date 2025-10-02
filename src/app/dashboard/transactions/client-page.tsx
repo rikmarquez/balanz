@@ -47,6 +47,7 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
     balance: 0,
     totalEgresos: 0,
     cashFlow: 0,
+    totalCount: 0,
   });
 
   const loadTransactions = useCallback(async (filters: FilterValues = {}) => {
@@ -92,6 +93,7 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
           balance: 0,
           totalEgresos: 0,
           cashFlow: 0,
+          totalCount: 0,
         });
       }
     } catch (error) {
@@ -131,6 +133,25 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
               Nuevo Gasto
             </Button>
           </Link>
+        </div>
+      </div>
+
+      {/* Total Count Badge */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-blue-900">
+              Total de transacciones en el período
+            </p>
+            <p className="text-2xl font-bold text-blue-600 mt-1">
+              {stats.totalCount.toLocaleString('es-MX')}
+            </p>
+          </div>
+          {hasActiveFilters && (
+            <div className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+              Filtrado
+            </div>
+          )}
         </div>
       </div>
 

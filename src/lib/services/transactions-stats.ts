@@ -70,12 +70,21 @@ export async function getFilteredTransactionStats(
     .where(and(...conditions))
     .groupBy(transactions.type, transactions.paymentMethod);
 
+  // Obtener el conteo total de transacciones con los mismos filtros
+  const countResult = await db
+    .select({
+      count: sql<number>`COUNT(*)`,
+    })
+    .from(transactions)
+    .where(and(...conditions));
+
   const stats = {
     totalIncome: 0,
     totalExpenses: 0,
     balance: 0,
     totalEgresos: 0,
     cashFlow: 0,
+    totalCount: countResult[0]?.count || 0,
   };
 
   // Calcular totales
@@ -116,6 +125,7 @@ export async function getFilteredTransactionStats(
         balance: 0,
         totalEgresos: 0,
         cashFlow: 0,
+        totalCount: 0,
       };
     }
 
@@ -134,10 +144,19 @@ export async function getFilteredTransactionStats(
       .where(and(...conditions))
       .groupBy(transactions.type, transactions.paymentMethod);
 
+    // Recalcular conteo con tags
+    const countResultWithTags = await db
+      .select({
+        count: sql<number>`COUNT(*)`,
+      })
+      .from(transactions)
+      .where(and(...conditions));
+
     // Resetear estadísticas
     stats.totalIncome = 0;
     stats.totalExpenses = 0;
     stats.totalEgresos = 0;
+    stats.totalCount = countResultWithTags[0]?.count || 0;
 
     resultWithTags.forEach((row) => {
       const amount = parseFloat(row.total || '0');

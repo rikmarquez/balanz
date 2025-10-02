@@ -1,6 +1,6 @@
 # BALANZ - Status del Sistema
 
-*Fecha de actualización: 31 de Agosto 2025 - Mejoras de Métricas Financieras*
+*Fecha de actualización: 2 de Octubre 2025 - Contador de Transacciones Totales*
 
 ## 📊 Resumen General
 
@@ -100,10 +100,11 @@
 - [x] **Edición de transacciones** - COMPLETADO HOY ✨
 - [x] **Eliminación de transacciones** - COMPLETADO HOY ✨
 - [x] **Botones de acción** en listado (editar/eliminar)
-- [x] **Métricas de Egresos** - Gastos en efectivo + transferencias ✨ NUEVO
-- [x] **Flujo de Efectivo** - Cálculo automático (Ingresos - Egresos) ✨ NUEVO
-- [x] **Dashboard con 5 métricas** - Diseño responsivo optimizado ✨ NUEVO
-- [x] **Recálculo dinámico** - Todas las métricas se actualizan con filtros ✨ NUEVO
+- [x] **Métricas de Egresos** - Gastos en efectivo + transferencias ✨
+- [x] **Flujo de Efectivo** - Cálculo automático (Ingresos - Egresos) ✨
+- [x] **Dashboard con 5 métricas** - Diseño responsivo optimizado ✨
+- [x] **Recálculo dinámico** - Todas las métricas se actualizan con filtros ✨
+- [x] **Contador de transacciones totales** - Muestra el total real según filtros aplicados ✨ NUEVO
 - [ ] **Cálculo automático** de saldos (pendiente)
 - [ ] **Validaciones de negocio** (saldos suficientes)
 
@@ -633,5 +634,45 @@ El módulo está completamente integrado en Balanz y listo para uso en producci�
 
 ---
 
-*Documento actualizado - Módulo de Transferencias Internas: 27 Septiembre 2025*
-**🎯 ESTADO: PROYECTO COMPLETADO AL 100% + TRANSFERENCIAS INTERNAS IMPLEMENTADAS 🎯**
+## 📊 CONTADOR DE TRANSACCIONES TOTALES (2 Octubre 2025)
+
+### **✅ Nueva funcionalidad implementada:**
+
+**🔢 Sistema de conteo total de transacciones:**
+- ✅ **Conteo real de transacciones** - Independiente del límite de visualización (100 registros)
+- ✅ **Banner destacado** - Ubicado arriba de las métricas financieras
+- ✅ **Respeta filtros aplicados** - El conteo se actualiza según todos los filtros activos
+- ✅ **Indicador visual** - Badge "Filtrado" cuando hay filtros activos
+- ✅ **Diseño responsive** - Optimizado para todos los dispositivos
+
+**🎯 Problema resuelto:**
+- Antes solo se mostraba el número de filas en pantalla (máximo 100)
+- Ahora se muestra el **total real** de transacciones que coinciden con los filtros
+- Los usuarios pueden saber exactamente cuántas transacciones hay en el período
+
+**🛠️ Implementación técnica:**
+- **Backend (`transactions-stats.ts`):**
+  - Agregada consulta `COUNT(*)` con los mismos filtros aplicados
+  - Nuevo campo `totalCount` en estadísticas
+  - Compatible con filtros de fecha, categoría, tags, tipo de egreso, etc.
+
+- **Frontend (`client-page.tsx`):**
+  - Nuevo banner con diseño en azul claro
+  - Formato con separadores de miles (ej: 1,234 transacciones)
+  - Badge condicional "Filtrado" cuando hay filtros activos
+  - Actualización automática en tiempo real
+
+**📁 Archivos modificados:**
+- `src/lib/services/transactions-stats.ts` - Lógica de conteo
+- `src/app/dashboard/transactions/client-page.tsx` - UI del contador
+- `SYSTEM_STATUS.md` - Documentación actualizada
+
+### **🔗 Commit completado:**
+- **Fecha**: 2 Octubre 2025
+- **Feature**: Contador de transacciones totales independiente del límite de visualización
+- **Estado**: ✅ Listo para producción
+
+---
+
+*Documento actualizado - Contador de Transacciones Totales: 2 Octubre 2025*
+**🎯 ESTADO: PROYECTO COMPLETADO AL 100% + MEJORAS DE UX IMPLEMENTADAS 🎯**
