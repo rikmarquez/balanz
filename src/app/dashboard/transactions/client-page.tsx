@@ -169,7 +169,7 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
           <div className="bg-white rounded-lg p-3 border border-red-100">
             <p className="text-xs font-medium text-gray-600 mb-1">Gastos/día</p>
             <p className="text-xl font-bold text-red-600">
-              ${expensesPerDay.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 0 })}
+              ${expensesPerDay.toLocaleString('es-MX', { maximumFractionDigits: 0 })}
             </p>
             {stats.periodDays > 0 && (
               <p className="text-xs text-gray-500 mt-1">{stats.periodDays} días</p>
@@ -180,7 +180,7 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
           <div className="bg-white rounded-lg p-3 border border-orange-100">
             <p className="text-xs font-medium text-gray-600 mb-1">Egresos/día</p>
             <p className="text-xl font-bold text-orange-600">
-              ${egressPerDay.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 0 })}
+              ${egressPerDay.toLocaleString('es-MX', { maximumFractionDigits: 0 })}
             </p>
             {stats.periodDays > 0 && (
               <p className="text-xs text-gray-500 mt-1">{stats.periodDays} días</p>
@@ -191,7 +191,7 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
           <div className="bg-white rounded-lg p-3 border border-purple-100">
             <p className="text-xs font-medium text-gray-600 mb-1">Gastos/transacción</p>
             <p className="text-xl font-bold text-purple-600">
-              ${expensesPerTransaction.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 0 })}
+              ${expensesPerTransaction.toLocaleString('es-MX', { maximumFractionDigits: 0 })}
             </p>
             {stats.expenseCount > 0 && (
               <p className="text-xs text-gray-500 mt-1">{stats.expenseCount} gastos</p>
@@ -202,7 +202,7 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
           <div className="bg-white rounded-lg p-3 border border-green-100">
             <p className="text-xs font-medium text-gray-600 mb-1">Ingresos/día</p>
             <p className="text-xl font-bold text-green-600">
-              ${incomePerDay.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 0 })}
+              ${incomePerDay.toLocaleString('es-MX', { maximumFractionDigits: 0 })}
             </p>
             {stats.periodDays > 0 && (
               <p className="text-xs text-gray-500 mt-1">{stats.periodDays} días</p>
