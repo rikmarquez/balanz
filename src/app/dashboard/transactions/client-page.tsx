@@ -48,6 +48,8 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
     totalEgresos: 0,
     cashFlow: 0,
     totalCount: 0,
+    expenseCount: 0,
+    periodDays: 0,
   });
 
   const loadTransactions = useCallback(async (filters: FilterValues = {}) => {
@@ -94,6 +96,8 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
           totalEgresos: 0,
           cashFlow: 0,
           totalCount: 0,
+          expenseCount: 0,
+          periodDays: 0,
         });
       }
     } catch (error) {
@@ -110,6 +114,12 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
 
   // Determinar si hay filtros activos para mostrar indicadores
   const hasActiveFilters = Object.keys(activeFilters).length > 0;
+
+  // Calcular métricas de velocidad
+  const expensesPerDay = stats.periodDays > 0 ? stats.totalExpenses / stats.periodDays : 0;
+  const egressPerDay = stats.periodDays > 0 ? stats.totalEgresos / stats.periodDays : 0;
+  const expensesPerTransaction = stats.expenseCount > 0 ? stats.totalExpenses / stats.expenseCount : 0;
+  const incomePerDay = stats.periodDays > 0 ? stats.totalIncome / stats.periodDays : 0;
 
   return (
     <div className="space-y-6">
@@ -136,22 +146,68 @@ export function TransactionsClientPage({ initialTransactions }: TransactionsClie
         </div>
       </div>
 
-      {/* Total Count Badge */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-blue-900">
-              Total de transacciones en el período
-            </p>
-            <p className="text-2xl font-bold text-blue-600 mt-1">
-              {stats.totalCount.toLocaleString('es-MX')}
-            </p>
-          </div>
+      {/* Métricas de Velocidad */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-blue-900">Métricas de Velocidad Financiera</h3>
           {hasActiveFilters && (
             <div className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
               Filtrado
             </div>
           )}
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {/* # Transacciones */}
+          <div className="bg-white rounded-lg p-3 border border-blue-100">
+            <p className="text-xs font-medium text-gray-600 mb-1"># Transacciones</p>
+            <p className="text-xl font-bold text-blue-600">
+              {stats.totalCount.toLocaleString('es-MX')}
+            </p>
+          </div>
+
+          {/* Gastos por día */}
+          <div className="bg-white rounded-lg p-3 border border-red-100">
+            <p className="text-xs font-medium text-gray-600 mb-1">Gastos/día</p>
+            <p className="text-xl font-bold text-red-600">
+              ${expensesPerDay.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 0 })}
+            </p>
+            {stats.periodDays > 0 && (
+              <p className="text-xs text-gray-500 mt-1">{stats.periodDays} días</p>
+            )}
+          </div>
+
+          {/* Egresos por día */}
+          <div className="bg-white rounded-lg p-3 border border-orange-100">
+            <p className="text-xs font-medium text-gray-600 mb-1">Egresos/día</p>
+            <p className="text-xl font-bold text-orange-600">
+              ${egressPerDay.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 0 })}
+            </p>
+            {stats.periodDays > 0 && (
+              <p className="text-xs text-gray-500 mt-1">{stats.periodDays} días</p>
+            )}
+          </div>
+
+          {/* Gastos por transacción */}
+          <div className="bg-white rounded-lg p-3 border border-purple-100">
+            <p className="text-xs font-medium text-gray-600 mb-1">Gastos/transacción</p>
+            <p className="text-xl font-bold text-purple-600">
+              ${expensesPerTransaction.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 0 })}
+            </p>
+            {stats.expenseCount > 0 && (
+              <p className="text-xs text-gray-500 mt-1">{stats.expenseCount} gastos</p>
+            )}
+          </div>
+
+          {/* Ingresos por día */}
+          <div className="bg-white rounded-lg p-3 border border-green-100">
+            <p className="text-xs font-medium text-gray-600 mb-1">Ingresos/día</p>
+            <p className="text-xl font-bold text-green-600">
+              ${incomePerDay.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 0 })}
+            </p>
+            {stats.periodDays > 0 && (
+              <p className="text-xs text-gray-500 mt-1">{stats.periodDays} días</p>
+            )}
+          </div>
         </div>
       </div>
 

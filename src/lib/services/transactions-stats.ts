@@ -78,6 +78,14 @@ export async function getFilteredTransactionStats(
     .from(transactions)
     .where(and(...conditions));
 
+  // Obtener conteo de gastos para calcular "gastos por transacción"
+  const expenseCountResult = await db
+    .select({
+      count: sql<number>`COUNT(*)`,
+    })
+    .from(transactions)
+    .where(and(...conditions, eq(transactions.type, 'expense')));
+
   const stats = {
     totalIncome: 0,
     totalExpenses: 0,
@@ -85,6 +93,8 @@ export async function getFilteredTransactionStats(
     totalEgresos: 0,
     cashFlow: 0,
     totalCount: countResult[0]?.count || 0,
+    expenseCount: expenseCountResult[0]?.count || 0,
+    periodDays: 0,
   };
 
   // Calcular totales
@@ -111,6 +121,14 @@ export async function getFilteredTransactionStats(
   // Flujo de efectivo = Ingresos - Egresos (efectivo + transferencias)
   stats.cashFlow = stats.totalIncome - stats.totalEgresos;
 
+  // Calcular días del período
+  if (filters.startDate && filters.endDate) {
+    const start = new Date(filters.startDate);
+    const end = new Date(filters.endDate);
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    stats.periodDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir ambos días
+  }
+
   // Si hay filtro por tags, necesitamos filtrar adicionalmente
   if (filters.tagIds && filters.tagIds.length > 0) {
     // Para tags, necesitamos recalcular porque involucra joins
@@ -126,6 +144,8 @@ export async function getFilteredTransactionStats(
         totalEgresos: 0,
         cashFlow: 0,
         totalCount: 0,
+        expenseCount: 0,
+        periodDays: 0,
       };
     }
 
@@ -152,11 +172,20 @@ export async function getFilteredTransactionStats(
       .from(transactions)
       .where(and(...conditions));
 
+    // Recalcular conteo de gastos con tags
+    const expenseCountResultWithTags = await db
+      .select({
+        count: sql<number>`COUNT(*)`,
+      })
+      .from(transactions)
+      .where(and(...conditions, eq(transactions.type, 'expense')));
+
     // Resetear estadísticas
     stats.totalIncome = 0;
     stats.totalExpenses = 0;
     stats.totalEgresos = 0;
     stats.totalCount = countResultWithTags[0]?.count || 0;
+    stats.expenseCount = expenseCountResultWithTags[0]?.count || 0;
 
     resultWithTags.forEach((row) => {
       const amount = parseFloat(row.total || '0');
