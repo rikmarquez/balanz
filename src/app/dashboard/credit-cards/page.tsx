@@ -61,9 +61,7 @@ export default async function CreditCardsPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200">
-        <CreditCardsList creditCards={creditCards} />
-      </div>
+      <CreditCardsList creditCards={creditCards} />
     </div>
   );
 }

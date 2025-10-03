@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
-import { Edit, CreditCard, Trash2, Eye } from 'lucide-react';
+import { Edit, CreditCard, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { CreditCard as CreditCardType } from '@/types';
 import { formatCurrency } from '@/lib/utils';
@@ -67,112 +67,108 @@ export function CreditCardsList({ creditCards }: CreditCardsListProps) {
   }
 
   return (
-    <div className="divide-y divide-gray-200">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {creditCards.map((card) => {
         const availableCredit = getAvailableCredit(card);
         const utilizationPercentage = getUtilizationPercentage(card);
-        
+
         return (
           <div
             key={card.id}
-            className="p-4 md:p-6 hover:bg-gray-50 transition-colors"
+            className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow"
           >
-            {/* Mobile-first layout */}
-            <div className="space-y-4">
-              {/* Header with name and actions */}
-              <div className="flex items-start justify-between">
-                <div className="flex items-center space-x-3 flex-1 min-w-0">
-                  {/* Card Icon */}
-                  <div className="p-2 md:p-3 bg-blue-100 rounded-lg flex-shrink-0">
-                    <CreditCard className="h-5 w-5 md:h-6 md:w-6 text-blue-600" />
-                  </div>
-                  
-                  {/* Name and status */}
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-base md:text-lg font-medium text-gray-900 truncate">
-                      {card.name}
-                    </h3>
-                    {!card.isActive && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 mt-1">
-                        Inactiva
-                      </span>
-                    )}
-                  </div>
+            {/* Header with name and actions */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3 flex-1 min-w-0">
+                <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
+                  <CreditCard className="h-5 w-5 text-blue-600" />
                 </div>
+                <h3 className="text-lg font-semibold text-gray-900 truncate">
+                  {card.name}
+                </h3>
+              </div>
 
-                {/* Actions - positioned at top right */}
-                <div className="flex space-x-1 flex-shrink-0">
-                  <Link href={`/dashboard/credit-cards/${card.id}`}>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                  </Link>
-                  
-                  <Link href={`/dashboard/credit-cards/${card.id}/edit`}>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </Link>
-                  
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    onClick={() => handleDelete(card.id)}
-                    disabled={deletingId === card.id}
-                    className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
-                  >
-                    <Trash2 className="h-4 w-4" />
+              <div className="flex space-x-1">
+                <Link href={`/dashboard/credit-cards/${card.id}/edit`}>
+                  <Button variant="ghost" size="icon">
+                    <Edit className="h-4 w-4" />
                   </Button>
-                </div>
+                </Link>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleDelete(card.id)}
+                  disabled={deletingId === card.id}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Credit Information */}
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-600">Límite:</span>
+                <span className="text-sm font-semibold text-blue-600">
+                  {formatCurrency(parseFloat(card.creditLimit))}
+                </span>
               </div>
 
-              {/* Credit Information - Mobile optimized */}
-              <div className="space-y-3">
-                {/* Límite y Utilizado */}
-                <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-2 sm:space-y-0">
-                  <div className="text-sm text-gray-600">
-                    <span className="font-medium">Límite:</span> {formatCurrency(parseFloat(card.creditLimit))}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    <span className="font-medium">Utilizado:</span> {formatCurrency(parseFloat(card.currentBalance))}
-                  </div>
-                </div>
-
-                {/* Disponible - moved below title as requested */}
-                <div className="text-sm">
-                  <div className="font-medium text-gray-600">Disponible:</div>
-                  <div className={`text-lg font-semibold ${availableCredit < parseFloat(card.creditLimit) * 0.1 ? 'text-red-600' : 'text-green-600'}`}>
-                    {formatCurrency(availableCredit)}
-                  </div>
-                </div>
-
-                {/* Utilization Bar */}
-                <div className="space-y-1">
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className={`h-2 rounded-full transition-all ${
-                        utilizationPercentage > 80 ? 'bg-red-500' :
-                        utilizationPercentage > 60 ? 'bg-yellow-500' :
-                        'bg-green-500'
-                      }`}
-                      style={{ width: `${Math.min(utilizationPercentage, 100)}%` }}
-                    />
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    Utilización: {utilizationPercentage.toFixed(1)}%
-                  </div>
-                </div>
-
-                {/* Payment Info */}
-                <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-1 sm:space-y-0 text-sm text-gray-600">
-                  <span>
-                    <span className="font-medium">Corte:</span> Día {card.cutDay}
-                  </span>
-                  <span>
-                    <span className="font-medium">Vencimiento:</span> Día {card.dueDay}
-                  </span>
-                </div>
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-600">Utilizado:</span>
+                <span className="text-sm font-semibold text-red-600">
+                  {formatCurrency(parseFloat(card.currentBalance))}
+                </span>
               </div>
+
+              <div className="flex justify-between">
+                <span className="text-sm text-gray-600">Disponible:</span>
+                <span className={`text-lg font-bold ${availableCredit < parseFloat(card.creditLimit) * 0.1 ? 'text-red-600' : 'text-green-600'}`}>
+                  {formatCurrency(availableCredit)}
+                </span>
+              </div>
+            </div>
+
+            {/* Utilization Bar */}
+            <div className="mt-4 space-y-1">
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full transition-all ${
+                    utilizationPercentage > 80 ? 'bg-red-500' :
+                    utilizationPercentage > 60 ? 'bg-yellow-500' :
+                    'bg-green-500'
+                  }`}
+                  style={{ width: `${Math.min(utilizationPercentage, 100)}%` }}
+                />
+              </div>
+              <div className="text-xs text-gray-500 text-center">
+                Utilización: {utilizationPercentage.toFixed(1)}%
+              </div>
+            </div>
+
+            {/* Footer with payment info and actions */}
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="flex justify-between items-center mb-3">
+                <div className="flex space-x-4 text-xs text-gray-600">
+                  <span>Corte: {card.cutDay}</span>
+                  <span>Vence: {card.dueDay}</span>
+                </div>
+                <span className={`text-xs px-2 py-1 rounded-full ${
+                  card.isActive
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-gray-100 text-gray-800'
+                }`}>
+                  {card.isActive ? 'Activa' : 'Inactiva'}
+                </span>
+              </div>
+
+              <Link href={`/dashboard/credit-cards/${card.id}`}>
+                <Button variant="outline" size="sm" className="w-full">
+                  Ver detalles
+                </Button>
+              </Link>
             </div>
           </div>
         );
