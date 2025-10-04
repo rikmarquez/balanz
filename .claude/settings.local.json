@@ -26,7 +26,8 @@
       "Bash(mv:*)",
       "Bash(find:*)",
       "Bash(timeout:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(npm run:*)"
     ],
     "deny": [],
     "ask": [],

@@ -27,9 +27,8 @@ export async function POST(request: NextRequest) {
 
       // Para cada tarjeta, buscar transacciones de pago que coincidan
       for (const card of userCards) {
-        const paymentDescription = `Pago de tarjeta ${card.name}`;
-
-        // Buscar transacciones de tipo transfer con esta descripción que no tengan cardId
+        // Buscar transacciones de tipo transfer que coincidan con el nombre de la tarjeta
+        // Puede ser exacto o con prefijo "Pago de tarjeta"
         const result = await db
           .update(transactions)
           .set({
@@ -40,7 +39,7 @@ export async function POST(request: NextRequest) {
             and(
               eq(transactions.userId, user.id),
               eq(transactions.type, 'transfer'),
-              like(transactions.description, paymentDescription),
+              sql`(${transactions.description} = ${card.name} OR ${transactions.description} LIKE ${'Pago de tarjeta ' + card.name})`,
               isNull(transactions.cardId)
             )
           )

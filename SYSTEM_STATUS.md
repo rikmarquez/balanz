@@ -863,5 +863,57 @@ El módulo está completamente integrado en Balanz y listo para uso en producci�
 
 ---
 
-*Documento actualizado - Rediseño UI Módulo Tarjetas: 2 Octubre 2025*
+## 💳 MEJORA: PAGOS DE TARJETA EN ÚLTIMOS MOVIMIENTOS (3 Octubre 2025)
+
+### **✅ Nueva funcionalidad implementada:**
+
+**🔄 Pagos de tarjeta ahora visibles en detalle de tarjetas:**
+- ✅ **Relación cardId en pagos** - Los pagos de tarjeta ahora se relacionan con la tarjeta correspondiente
+- ✅ **Visualización mejorada** - Los pagos aparecen en "Últimos Movimientos de la Tarjeta"
+- ✅ **Ícono distintivo** - Transacciones de tipo 'transfer' con ícono ArrowRightLeft en azul
+- ✅ **Script de migración** - Endpoint y página para migrar pagos existentes
+- ✅ **Colores diferenciados** - Verde (ingresos), Rojo (gastos), Azul (transferencias/pagos)
+- ✅ **Migración ejecutada** - 14 pagos históricos actualizados correctamente (3 Oct 2025)
+
+**🛠️ Cambios técnicos realizados:**
+
+**Backend (`src/lib/services/credit-cards.ts`):**
+- Modificado `processCreditCardPayment` para incluir `cardId` en la transacción de pago
+- Ahora los pagos tienen tanto `accountId` (origen del dinero) como `cardId` (tarjeta pagada)
+- Línea 176: Agregado `cardId: cardId` al crear la transacción de pago
+
+**Frontend (`src/components/transactions/RecentTransactions.tsx`):**
+- Agregado ícono `ArrowRightLeft` para transacciones de tipo 'transfer'
+- Color azul para pagos de tarjeta (bg-blue-100, text-blue-600)
+- Manejo de 3 tipos de transacciones: income (verde), expense (rojo), transfer (azul)
+- Formato de monto sin signo para transferencias
+
+**Migración de datos:**
+- `src/app/api/admin/migrate-card-payments/route.ts` - Endpoint API para migrar pagos existentes
+- `src/app/dashboard/admin/migrate-payments/page.tsx` - Interfaz web para ejecutar migración
+- Actualiza transacciones tipo 'transfer' sin cardId usando la descripción "Pago de tarjeta [nombre]"
+
+**📁 Archivos creados/modificados:**
+- `src/lib/services/credit-cards.ts` - Función processCreditCardPayment actualizada
+- `src/components/transactions/RecentTransactions.tsx` - Soporte para tipo 'transfer'
+- `src/app/api/admin/migrate-card-payments/route.ts` - Endpoint de migración (nuevo)
+- `src/app/dashboard/admin/migrate-payments/page.tsx` - UI de migración (nuevo)
+
+### **🔗 Instrucciones de migración:**
+
+Para actualizar pagos de tarjeta existentes:
+1. Navegar a: `http://localhost:3000/dashboard/admin/migrate-payments`
+2. Hacer clic en "Ejecutar Migración"
+3. El sistema actualizará automáticamente todos los pagos existentes
+4. Los pagos ahora aparecerán en la sección "Últimos Movimientos" de cada tarjeta
+
+### **🎯 Resultado final:**
+- ✅ **Visibilidad completa** - Todos los movimientos de la tarjeta (gastos + pagos) en un solo lugar
+- ✅ **Trazabilidad mejorada** - Fácil ver cuándo se hicieron pagos a cada tarjeta
+- ✅ **UX optimizada** - Colores e íconos distintivos para cada tipo de transacción
+- ✅ **Retrocompatibilidad** - Script de migración para actualizar datos existentes
+
+---
+
+*Documento actualizado - Pagos de tarjeta en últimos movimientos: 3 Octubre 2025*
 **🎯 ESTADO: PROYECTO COMPLETADO AL 100% + MEJORAS DE UX CONTINUAS 🎯**
