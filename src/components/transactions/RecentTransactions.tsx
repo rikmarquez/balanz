@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Transaction } from '@/types';
 import { formatCurrency, formatLocalDate } from '@/lib/utils';
-import { TrendingUp, TrendingDown, CreditCard, Wallet, Eye, Calendar } from 'lucide-react';
+import { TrendingUp, TrendingDown, CreditCard, Wallet, Eye, Calendar, ArrowRightLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 
@@ -110,10 +110,14 @@ export function RecentTransactions({
             <div key={transaction.id} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
               {/* Type Icon */}
               <div className={`p-2 rounded-lg flex-shrink-0 ${
-                transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
+                transaction.type === 'income' ? 'bg-green-100' :
+                transaction.type === 'transfer' ? 'bg-blue-100' :
+                'bg-red-100'
               }`}>
                 {transaction.type === 'income' ? (
                   <TrendingUp className="h-4 w-4 text-green-600" />
+                ) : transaction.type === 'transfer' ? (
+                  <ArrowRightLeft className="h-4 w-4 text-blue-600" />
                 ) : (
                   <TrendingDown className="h-4 w-4 text-red-600" />
                 )}
@@ -159,9 +163,11 @@ export function RecentTransactions({
               {/* Amount */}
               <div className="flex-shrink-0">
                 <span className={`text-sm font-semibold ${
-                  transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+                  transaction.type === 'income' ? 'text-green-600' :
+                  transaction.type === 'transfer' ? 'text-blue-600' :
+                  'text-red-600'
                 }`}>
-                  {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                  {transaction.type === 'income' ? '+' : transaction.type === 'transfer' ? '' : '-'}{formatCurrency(transaction.amount)}
                 </span>
               </div>
             </div>

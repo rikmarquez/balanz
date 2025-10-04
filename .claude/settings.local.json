@@ -25,7 +25,8 @@
       "Bash(move balanz-logo.jpg public)",
       "Bash(mv:*)",
       "Bash(find:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "ask": [],

@@ -1,6 +1,6 @@
 # BALANZ - Status del Sistema
 
-*Fecha de actualización: 2 de Octubre 2025 - Contador de Transacciones Totales*
+*Fecha de actualización: 2 de Octubre 2025 - Métricas de Velocidad Financiera*
 
 ## 📊 Resumen General
 
@@ -104,7 +104,8 @@
 - [x] **Flujo de Efectivo** - Cálculo automático (Ingresos - Egresos) ✨
 - [x] **Dashboard con 5 métricas** - Diseño responsivo optimizado ✨
 - [x] **Recálculo dinámico** - Todas las métricas se actualizan con filtros ✨
-- [x] **Contador de transacciones totales** - Muestra el total real según filtros aplicados ✨ NUEVO
+- [x] **Contador de transacciones totales** - Muestra el total real según filtros aplicados ✨
+- [x] **Métricas de velocidad financiera** - 5 indicadores clave de movimiento de dinero ✨ NUEVO
 - [ ] **Cálculo automático** de saldos (pendiente)
 - [ ] **Validaciones de negocio** (saldos suficientes)
 
@@ -674,5 +675,193 @@ El módulo está completamente integrado en Balanz y listo para uso en producci�
 
 ---
 
-*Documento actualizado - Contador de Transacciones Totales: 2 Octubre 2025*
-**🎯 ESTADO: PROYECTO COMPLETADO AL 100% + MEJORAS DE UX IMPLEMENTADAS 🎯**
+## 🚀 MÉTRICAS DE VELOCIDAD FINANCIERA (2 Octubre 2025)
+
+### **✅ Nueva funcionalidad implementada:**
+
+**📊 Sistema completo de métricas de velocidad financiera:**
+- ✅ **Banner interactivo con 5 métricas clave** - Diseño en gradiente azul-índigo
+- ✅ **Cálculos automáticos de velocidad** - Basados en días del período y conteos específicos
+- ✅ **Diseño responsive optimizado** - Grid de 2 columnas (móvil), 3 (tablet), 5 (desktop)
+- ✅ **Indicadores de contexto** - Muestra días del período y número de gastos bajo cada métrica
+- ✅ **Formato optimizado** - Montos sin decimales para mejor legibilidad
+- ✅ **Actualización dinámica** - Todas las métricas se recalculan según filtros aplicados
+
+**📈 Métricas implementadas:**
+
+1. **# Transacciones** (Color: Azul)
+   - Total de transacciones en el período filtrado
+   - Muestra el conteo real, no limitado a las 100 transacciones mostradas
+
+2. **Gastos/día** (Color: Rojo)
+   - Fórmula: Total Gastos ÷ Días del período
+   - Indica la velocidad promedio de gasto diario
+   - Muestra subtexto con "X días" cuando hay filtro de fecha
+
+3. **Egresos/día** (Color: Naranja)
+   - Fórmula: Total Egresos ÷ Días del período
+   - Mide salida real de efectivo (gastos en efectivo + transferencias)
+   - Muestra subtexto con "X días" cuando hay filtro de fecha
+
+4. **Gastos/transacción** (Color: Morado)
+   - Fórmula: Total Gastos ÷ Número de transacciones de gastos
+   - Indica el ticket promedio por transacción de gasto
+   - Muestra subtexto con "X gastos" indicando el número de transacciones
+
+5. **Ingresos/día** (Color: Verde)
+   - Fórmula: Total Ingresos ÷ Días del período
+   - Mide la velocidad promedio de entrada de dinero
+   - Muestra subtexto con "X días" cuando hay filtro de fecha
+
+**🎯 Casos de uso empresariales:**
+- **Análisis de ritmo de gasto** - Ver cuánto se gasta en promedio por día
+- **Control de salida de efectivo** - Monitorear egresos reales diarios
+- **Benchmark de tickets** - Comparar gasto promedio por transacción entre períodos
+- **Proyección de ingresos** - Estimar ingresos futuros basados en promedio diario
+- **Planificación financiera** - Comparar métricas entre diferentes períodos usando filtros
+
+**🛠️ Implementación técnica:**
+
+**Backend (`src/lib/services/transactions-stats.ts`):**
+- ✅ Agregado cálculo automático de **días del período** cuando hay filtros startDate/endDate
+- ✅ Nueva consulta para contar **transacciones de gastos** específicamente
+- ✅ Nuevos campos en objeto stats:
+  - `periodDays`: Número de días entre startDate y endDate (+1 para incluir ambos)
+  - `expenseCount`: Conteo de transacciones de tipo 'expense'
+- ✅ Soporte completo para filtros con tags (recalcula conteos con tags aplicados)
+
+**Frontend (`src/app/dashboard/transactions/client-page.tsx`):**
+- ✅ Nuevas variables de estado para `expenseCount` y `periodDays`
+- ✅ Cálculos de métricas de velocidad:
+  ```typescript
+  expensesPerDay = totalExpenses / periodDays
+  egressPerDay = totalEgresos / periodDays
+  expensesPerTransaction = totalExpenses / expenseCount
+  incomePerDay = totalIncome / periodDays
+  ```
+- ✅ Banner rediseñado con:
+  - Gradiente de azul a índigo en fondo
+  - Grid responsive: `grid-cols-2 md:grid-cols-3 lg:grid-cols-5`
+  - Cards individuales con borde de color para cada métrica
+  - Formato mexicano sin decimales: `toLocaleString('es-MX', { maximumFractionDigits: 0 })`
+  - Subtextos condicionales (solo cuando hay datos de días/gastos)
+  - Badge "Filtrado" cuando hay filtros activos
+
+**📐 Diseño UX/UI:**
+- **Jerarquía visual**: Banner destacado arriba de las métricas financieras tradicionales
+- **Código de colores**: Cada métrica tiene su propio color distintivo (azul, rojo, naranja, morado, verde)
+- **Información contextual**: Subtextos informativos que explican el denominador de cada cálculo
+- **Responsive design**: Adaptación perfecta a todos los tamaños de pantalla
+- **Legibilidad optimizada**: Números grandes y claros, sin decimales para facilitar lectura rápida
+
+**📁 Archivos modificados:**
+- `src/lib/services/transactions-stats.ts` - Lógica de cálculo de métricas
+- `src/app/dashboard/transactions/client-page.tsx` - UI del banner de métricas
+- `SYSTEM_STATUS.md` - Documentación actualizada
+
+**💡 Comportamiento dinámico:**
+- Si **NO hay filtro de fecha**: Las métricas por día muestran $0 (no se puede calcular sin período)
+- Si **NO hay transacciones de gastos**: Gastos/transacción muestra $0 (evita división por cero)
+- Con **filtros activos**: Badge "Filtrado" se muestra en esquina superior derecha del banner
+- Con **filtros de fecha**: Subtextos muestran el número de días del período
+- **Todas las métricas se recalculan** automáticamente al cambiar cualquier filtro
+
+### **🔗 Commit completado:**
+- **Commit ID**: `1c703ac`
+- **Fecha**: 2 Octubre 2025
+- **Feature**: Métricas de velocidad financiera en módulo de Transacciones
+- **Archivos modificados**: 2 archivos (transactions-stats.ts, client-page.tsx)
+- **Líneas agregadas**: +96, **Líneas eliminadas**: -11
+- **Estado**: ✅ Pusheado a repositorio remoto
+
+---
+
+## 🎨 REDISEÑO UI - MÓDULO DE TARJETAS EN MOSAICO (2 Octubre 2025)
+
+### **✅ Mejora de UX implementada:**
+
+**🎯 Rediseño completo del módulo de tarjetas de crédito:**
+- ✅ **Layout en mosaico/grid** - Diseño consistente con módulo de Cuentas de Efectivo
+- ✅ **Grid responsive optimizado** - 1 columna (móvil), 2 (tablet), 3 (desktop)
+- ✅ **Cards individuales** - Cada tarjeta como card independiente con borde
+- ✅ **Efecto hover mejorado** - Sombra al pasar el mouse sobre cada card
+- ✅ **Información condensada** - Datos organizados en formato compacto
+- ✅ **Barra de utilización visible** - En cada card individual
+- ✅ **Footer estructurado** - Fechas de corte/vencimiento + badge de estado + botón de detalle
+
+**🎨 Cambios de diseño:**
+
+**Antes:**
+- Listado vertical con divisores (`divide-y`)
+- Cards apiladas una debajo de otra
+- Contenedor único con borde general
+- Diseño más extenso verticalmente
+
+**Después:**
+- Grid responsive de 1-3 columnas según dispositivo
+- Cards individuales con bordes independientes
+- Transición de sombra en hover (`hover:shadow-md`)
+- Aprovechamiento óptimo del espacio horizontal
+- Consistencia visual con módulo de Cuentas
+
+**📊 Estructura de cada card:**
+
+```
+┌─────────────────────────────────┐
+│ 🔵 [Nombre]      [✏️] [🗑️]      │
+├─────────────────────────────────┤
+│ Límite:           $XX,XXX.XX    │
+│ Utilizado:        $XX,XXX.XX    │
+│ Disponible:       $XX,XXX.XX    │
+│                                 │
+│ [████████░░] 80%                │
+│                                 │
+├─────────────────────────────────┤
+│ Corte: X  Vence: Y    [Activa]  │
+│ [     Ver detalles     ]        │
+└─────────────────────────────────┘
+```
+
+**🛠️ Implementación técnica:**
+
+**Componente principal (`CreditCardsList.tsx`):**
+- Cambiado de `divide-y divide-gray-200` a `grid gap-4 md:grid-cols-2 lg:grid-cols-3`
+- Cards con clase `bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow`
+- Header simplificado con ícono + nombre + acciones
+- Información de crédito en formato label-valor alineados
+- Barra de utilización con texto centrado
+- Footer con border superior separando fechas, estado y botón
+
+**Página principal (`credit-cards/page.tsx`):**
+- Removido contenedor `<div className="bg-white rounded-lg border">` que envolvía el componente
+- Ahora el componente se renderiza directamente sin wrapper adicional
+- Las métricas del header permanecen sin cambios
+
+**Limpieza de código:**
+- Removido import de ícono `Eye` no utilizado
+- Simplificado layout eliminando anidación innecesaria
+- Reducido código de 180 a 178 líneas (más eficiente)
+
+**📁 Archivos modificados:**
+- `src/components/credit-cards/CreditCardsList.tsx` - Componente de listado
+- `src/app/dashboard/credit-cards/page.tsx` - Página principal del módulo
+
+### **🔗 Commit completado:**
+- **Commit ID**: `6dd8278`
+- **Fecha**: 2 Octubre 2025
+- **Feature**: Rediseñar módulo de tarjetas con layout en mosaico
+- **Archivos modificados**: 2 archivos
+- **Líneas agregadas**: +87, **Líneas eliminadas**: -93
+- **Estado**: ✅ Pusheado a repositorio remoto
+
+**💡 Beneficios de UX:**
+- ✅ **Escaneo visual mejorado** - Las cards en grid permiten comparar tarjetas rápidamente
+- ✅ **Uso eficiente del espacio** - Aprovecha el ancho de pantalla en dispositivos grandes
+- ✅ **Consistencia de diseño** - Misma experiencia que módulo de Cuentas
+- ✅ **Acciones más accesibles** - Botones de edición/eliminación siempre visibles en header
+- ✅ **Navegación intuitiva** - Botón "Ver detalles" prominente en cada card
+
+---
+
+*Documento actualizado - Rediseño UI Módulo Tarjetas: 2 Octubre 2025*
+**🎯 ESTADO: PROYECTO COMPLETADO AL 100% + MEJORAS DE UX CONTINUAS 🎯**

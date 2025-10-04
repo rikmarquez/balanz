@@ -173,6 +173,7 @@ export async function processCreditCardPayment(
       amount: paymentData.amount.toString(),
       description: paymentData.description || `Pago de tarjeta ${card.name}`,
       accountId: paymentData.accountId,
+      cardId: cardId, // Relacionar el pago con la tarjeta
       categoryId: paymentCategoryId,
       date: paymentData.date || new Date().toLocaleDateString('en-CA'), // formato YYYY-MM-DD en zona horaria local
       tagIds: []
